@@ -1,10 +1,10 @@
 const express = require("express");
 const { body, query, param, validationResult } = require("express-validator");
+const router = express.Router();
 const controller = require("../controller/clinic");
 const validator = require("./../middlewares/errorValidation");
 const expressValidation = require("./../middlewares/validation")
 
-const router = express.Router();
 
 
 router.route("/clinic")
@@ -14,7 +14,6 @@ router.route("/clinic")
 
 
 router.get("/clinic/:id",
-    param("id").isIn().withMessage("id should be integr"),
     validator,
     controller.getClinicByID)
 

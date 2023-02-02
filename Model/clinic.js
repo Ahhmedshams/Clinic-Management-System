@@ -1,8 +1,10 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
+
 
 const schema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
+    _id: Number,
     name: { type: String, required: true, unquie: true },
     email: {
         type: String, required: true, trim: true, lowercase: true, unquie: true,
@@ -89,9 +91,11 @@ const schema = new mongoose.Schema({
         }
     ]
 })
-schema.pre('save', async function (next) {
-    const salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt)
-    next();
-})
+// schema.pre('save', async function (next) {
+//     const salt = await bcrypt.genSalt();
+//     this.password = await bcrypt.hash(this.password, salt)
+//     next();
+// })
+schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
+
 mongoose.model("clinic", schema);
