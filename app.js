@@ -1,10 +1,48 @@
-const express = require("express");
+const express= require("express");
+const morgan =require("morgan");
+const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/error")
+//Load env 
+require('dotenv').config();
+//Router Files
+const patientRouter= require("./routes/patient");
 
-//open server with http protocol  http://localhost:8080
+//Server
 const server = express();
 
-let port = process.env.PORT || 8080;
 
-server.listen(port, () => {
-    console.log("I'm Listening........", port);
-});
+let port = process.env.PORT || 8080;
+mongoose.set('strictQuery', true);
+mongoose.connect(process.env.DB_URL)
+        .then(()=>{
+            server.listen(port,()=>{
+                console.log(`Server Is Running In ${process.env.DB_URL} On Port ${port}`)
+            });
+        })
+        .catch(error=>{
+            console.log(" BD Problem" + error)
+        })
+
+//Morgan middleware --- Logger 
+server.use(morgan('tiny'))
+
+
+// Body Parser (Convert body data to Json format)
+server.use(express.json())
+
+//Routes
+server.use(patientRouter)
+
+
+
+
+//Not Found Middleware
+server.use((request,response,next)=>{
+    response.status(404).json({data:"Not Found"});
+})
+//Error MiddleWare
+
+server.use(errorHandler)
+// server.use((error,request,response,next)=>{
+//     response.status(500).json({message:` ${error}`});
+// })
