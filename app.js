@@ -11,6 +11,8 @@ const employeeRouter = require("./routes/employee");
 const appointmentRouter = require("./routes/appointment");
 const medicineRouter=require("./routes/medicineRouter");
 const rescriptionRouter=require("./routes/rescription");
+const doctorRouter = require("./routes/doctorRoute");
+
 //Server
 const server = express();
 
@@ -41,6 +43,7 @@ server.use(employeeRouter)
 server.use("/appointment",appointmentRouter)
 server.use("/medicines",medicineRouter);
 server.use(rescriptionRouter);
+server.use(doctorRouter);
 
 
 
