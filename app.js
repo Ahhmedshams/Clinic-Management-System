@@ -3,6 +3,7 @@ const express= require("express");
 const morgan =require("morgan");
 const mongoose = require("mongoose");
 
+const resptionmange=require("../Node-Project/routes/RescriptionManag")
 
 //Server
 const server = express();
@@ -23,9 +24,7 @@ mongoose.connect(process.env.DB_URL)
 server.use(morgan('tiny'))
 //convert Data to Json format
 server.use(express.json())
-
-//Routes
-
+server.use (resptionmange) ;
 
 //Not Found Middleware
 server.use((request,response,next)=>{
