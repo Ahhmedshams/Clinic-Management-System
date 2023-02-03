@@ -2,7 +2,7 @@ require('dotenv').config();
 const express= require("express");
 const morgan =require("morgan");
 const mongoose = require("mongoose");
-const doctorRouter = require("./Routes/doctorRoute");
+
 
 //Server
 const server = express();
@@ -25,7 +25,6 @@ server.use(morgan('tiny'))
 server.use(express.json())
 
 //Routes
-server.use(doctorRouter);
 
 
 //Not Found Middleware
