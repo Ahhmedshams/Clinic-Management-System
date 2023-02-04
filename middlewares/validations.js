@@ -1,11 +1,11 @@
-const {body,param}=require("express-validator");
+const { body, param } = require("express-validator");
 
-exports.patientPost=[
+exports.patientPost = [
     body("fName").isAlpha()
         .withMessage("fName Shoud be string"),
     body("lName").isAlpha()
         .withMessage("lName Shoud be string"),
-    body("gender").isIn(["Female","Male"])
+    body("gender").isIn(["Female", "Male"])
         .withMessage("Gender Shoud be One Of ('Female','Male')"),
     body("age").optional().isInt()
         .withMessage("Age is required"),
@@ -32,13 +32,13 @@ exports.patientPost=[
         .isInt()
         .withMessage("building Should Be integer")
 ]
-exports.patientUpdate=[
+exports.patientUpdate = [
     param("id").isInt().withMessage("id Should be integer"),
     body("fName").optional().isAlpha()
         .withMessage("fName Shoud be string"),
     body("lName").optional().isAlpha()
         .withMessage("lName Shoud be string"),
-    body("gender").optional().isIn(["Female","Male"])
+    body("gender").optional().isIn(["Female", "Male"])
         .withMessage("Gender Shoud be One Of ('Female','Male')"),
     body("age").optional().isInt()
         .withMessage("Age is required"),
@@ -67,7 +67,6 @@ exports.patientUpdate=[
 ]
 exports.clinicValidation =
     [
-        body("id").isInt().withMessage("Id should be integer"),
         body("name").isAlpha().withMessage("name should be string")
             .isLength({ max: 20 }).withMessage("length of name less than 20"),
         body("email").isEmail().withMessage("Enter a valid email"),
@@ -77,6 +76,15 @@ exports.clinicValidation =
         body("doctors").isArray(),
         body("employees").isArray()
     ]
+exports.invoiceValidation =
+    [
+        body("paymentType").isIn(['cash', 'credit card', ' Insurance Card'])
+            .withMessage("Payment Type should be cash or credit card or Insurance Card "),
+        body("totalCost").isNumeric().withMessage("Total cost should be number"),
+        body("date").isDate().withMessage("Please Enter Invalid Date"),
+        body("doctor").isNumeric().withMessage("Doctor ID should be number"),
+        body("Patient").isNumeric().withMessage("Patient ID should be number")
+    ]
 
-exports.paramIdInt=param("id").isInt().withMessage("id Should be Integer")
-exports.paramisMongoId=param("id").isMongoId().withMessage("id Should be MongoId");
+exports.paramIdInt = param("id").isInt().withMessage("id Should be Integer")
+exports.paramisMongoId = param("id").isMongoId().withMessage("id Should be MongoId");
