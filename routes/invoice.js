@@ -12,8 +12,8 @@ const invoice = mongoose.model('invoice');
 
 router.route("/invoice")
     .get(advancedResults(invoice), controller.getAllinvoice)
-    .post(expressValidation.invoiceValidation, validator, controller.addInvoice)
-    .patch(expressValidation.invoiceValidation, validator, controller.updateInvoice)
+    .post(expressValidation.invoicePost, validator, controller.addInvoice)
+    .patch(expressValidation.invoiceUpdate, validator, controller.updateInvoice)
 
 
 router.get("/invoice/:id",

@@ -30,7 +30,7 @@ exports.addClinic = (request, response, next) => {
 
 exports.updateClinic = (request, response, next) => {
     ClinicSchema.updateOne({
-        _id: request.body.id,
+        _id: request.params.id,
     }, {
         $set: {
             name: request.body.name,

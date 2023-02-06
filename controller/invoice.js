@@ -17,7 +17,8 @@ exports.addInvoice = (request, response, next) => {
         totalCost: request.body.totalCost,
         date: request.body.date,
         doctor: request.body.doctor,
-        Patient: request.body.Patient,
+        patient: request.body.patient,
+        // small 
     })
     newInvoice.save()
         .then(result => {
@@ -28,14 +29,14 @@ exports.addInvoice = (request, response, next) => {
 
 exports.updateInvoice = (request, response, next) => {
     InvoiceSchema.updateOne({
-        _id: request.body.id,
+        _id: request.params.id,
     }, {
         $set: {
             paymentType: request.body.paymentType,
             totalCost: request.body.totalCost,
             date: request.body.date,
             doctor: request.body.doctor,
-            Patient: request.body.Patient,
+            patient: request.body.patient,
         }
     })
         .then(result => {

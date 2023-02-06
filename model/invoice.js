@@ -15,7 +15,8 @@ const schema = new mongoose.Schema({
         min: '2023-01-01'
     },
     doctor: { type: Number, ref: "doctor" },
-    Patient: { type: Number, ref: "patient" }
+    patient: { type: Number, ref: "patient" },
+    // clinic ref
 }, { _id: false })
 
 schema.plugin(AutoIncrement, { id: 'invoice_id_counter', inc_field: '_id' });

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
-const schema = new mongoose.Schema({
+const Schema = new mongoose.Schema({
     _id: Number,
     name: { type: String, required: true, unique: true },
     email: {
@@ -29,6 +29,6 @@ const schema = new mongoose.Schema({
 // })
 //
 
-schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
+Schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
 
-mongoose.model("clinic", schema);
+mongoose.model("clinic", Schema);

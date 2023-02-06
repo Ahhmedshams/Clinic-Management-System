@@ -5,6 +5,7 @@ const errorHandler = require("./middlewares/error")
 //Load env 
 require('dotenv').config();
 //Router Files
+const userRouter = require("./routes/user");
 const patientRouter = require("./routes/patient");
 const clinicRouter = require("./routes/clinic");
 const employeeRouter = require("./routes/employee");
@@ -38,6 +39,7 @@ server.use(morgan('tiny'))
 server.use(express.json())
 
 //Routes
+server.use(userRouter)
 server.use(patientRouter)
 server.use(clinicRouter)
 server.use(employeeRouter)

@@ -65,7 +65,7 @@ exports.patientUpdate = [
         .isInt()
         .withMessage("building Should Be integer")
 ]
-exports.clinicValidation =
+exports.clinicPost =
     [
         body("name").isAlpha().withMessage("name should be string")
             .isLength({ max: 20 }).withMessage("length of name less than 20"),
@@ -76,7 +76,19 @@ exports.clinicValidation =
         body("doctors").isArray(),
         body("employees").isArray()
     ]
-exports.invoiceValidation =
+exports.clinicUpdate =
+    [
+        param("id").isInt().withMessage("id Should be integer"),
+        body("name").optional().isAlpha().withMessage("name should be string")
+            .isLength({ max: 20 }).withMessage("length of name less than 20"),
+        body("email").optional().isEmail().withMessage("Enter a valid email"),
+        body("location").optional().isString().withMessage("Location should be string"),
+        body("speciality").optional().isIn(['cardiology', 'dentistry', 'ENT', 'dermatology', 'nutrition']),
+        body("medicines").optional().isArray(),
+        body("doctors").optional().isArray(),
+        body("employees").optional().isArray()
+    ]
+exports.invoicePost =
     [
         body("paymentType").isIn(['cash', 'credit card', ' Insurance Card'])
             .withMessage("Payment Type should be cash or credit card or Insurance Card "),
@@ -85,6 +97,40 @@ exports.invoiceValidation =
         body("doctor").isNumeric().withMessage("Doctor ID should be number"),
         body("Patient").isNumeric().withMessage("Patient ID should be number")
     ]
-
+exports.invoiceUpdate =
+    [
+        param("id").isInt().withMessage("id Should be integer"),
+        body("paymentType").optional().isIn(['cash', 'credit card', ' Insurance Card'])
+            .withMessage("Payment Type should be cash or credit card or Insurance Card "),
+        body("totalCost").optional().isNumeric().withMessage("Total cost should be number"),
+        body("date").optional().isDate().withMessage("Please Enter Invalid Date"),
+        body("doctor").optional().isNumeric().withMessage("Doctor ID should be number"),
+        body("Patient").optional().isNumeric().withMessage("Patient ID should be number")
+    ]
+exports.userPost =
+    [
+        body("fullName").isString().withMessage("Full Name should be string"),
+        body("email").isEmail().withMessage("Enter a valid email"),
+        body("password").isString().withMessage("password is required"),
+        body("phone").optional()
+            .isMobilePhone('ar-EG')
+            .withMessage("phone Should Be a Valid Phone Number")
+            .isLength({ min: 10, max: 14, })
+            .withMessage("phone length should be between 10 and 14 numbers"),
+        body("role").isIn(['doctor', 'employee', 'patient'])
+    ]
+exports.userUpdate =
+    [
+        param("id").isInt().withMessage("id Should be integer"),
+        body("fullName").optional().isString().withMessage("Full Name should be string"),
+        body("email").optional().isEmail().withMessage("Enter a valid email"),
+        body("password").optional().isString().withMessage("password is required"),
+        body("phone").optional()
+            .isMobilePhone('ar-EG')
+            .withMessage("phone Should Be a Valid Phone Number")
+            .isLength({ min: 10, max: 14, })
+            .withMessage("phone length should be between 10 and 14 numbers"),
+        body("role").optional().isIn(['doctor', 'employee', 'patient'])
+    ]
 exports.paramIdInt = param("id").isInt().withMessage("id Should be Integer")
 exports.paramisMongoId = param("id").isMongoId().withMessage("id Should be MongoId");
