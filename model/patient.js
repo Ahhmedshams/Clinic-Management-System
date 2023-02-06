@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         trim:true,
         maxlength:[50,'Name can not be more than 50 characters']
     },
-    sex:{
+    gender:{
         type:String,
         required:true,
         enum:['Male','Female']
@@ -26,7 +26,12 @@ const schema = new mongoose.Schema({
         match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,'Please add A valid email']
     },
     password:{type:String,required:true},
-    phone:{type:Number,minlength:10, maxlength:14},
+    phone:{
+        type:Number,
+        match:[/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,"It is not a valid phone or line number"],
+        trim: true,
+        required:[true,"Phone Number is required"]
+        },
     address:schemas.addressSchema,
     appointment:{type:Array , ref :'appintment'},
     prescriptions:{type:Array , ref :'prescription'},

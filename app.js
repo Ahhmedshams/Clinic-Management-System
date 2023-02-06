@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const errorHandler = require("./middlewares/error")
 //Load env 
 require('dotenv').config();
+
 //Router Files
 const userRouter = require("./routes/user");
 const patientRouter = require("./routes/patient");
@@ -12,7 +13,7 @@ const employeeRouter = require("./routes/employee");
 const appointmentRouter = require("./routes/appointment");
 const medicineRouter = require("./routes/medicineRouter");
 const rescriptionRouter = require("./routes/rescription");
-const doctorRouter = require("./routes/doctorRoute");
+const doctorRouter = require("./routes/doctor");
 const calender = require("./routes/doctorsCalender")
 const invoiceRouter = require("./routes/invoice");
 

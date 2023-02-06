@@ -6,7 +6,7 @@ const ErrorResponse = require('./../utils/errorResponse')
 
 require('./../model/appointment');
 require('./../model/doctorCalender');
-require("./../model/doctorModel")
+require("./../model/doctor")
 const calender= mongoose.model('calender');
 const doctors= mongoose.model('doctors');
 const appointment = mongoose.model('appointment');

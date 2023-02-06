@@ -51,7 +51,7 @@ exports.getPatient =(request,response,next)=>{
 exports.createPatient =(request,response,next)=>{
     let newPatient = new patient({
         name: request.body.fName +" "+ request.body.lName,
-        sex:request.body.gender,
+        gender:request.body.gender,
         age:request.body.age,
         email:request.body.email,
         password:request.body.password,
@@ -80,7 +80,7 @@ exports.updatePatient =(request,response,next)=>{
     },{
         $set:{
             name:request.body.fullName,
-            sex:request.body.gender,
+            gender:request.body.gender,
             age:request.body.age,
             email:request.body.email,
             password:request.body.password,

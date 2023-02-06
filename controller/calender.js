@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const ErrorResponse = require('./../utils/errorResponse');
 const { response } = require("express");
 require('./../model/doctorCalender');
-require("./../model/doctorModel")
+require("./../model/doctor");
 const calender= mongoose.model('calender');
 const doctors= mongoose.model('doctors');
 //------------------------------------------------------------TODO
