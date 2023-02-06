@@ -19,8 +19,11 @@ const nameSchema = new mongoose.Schema({
 
 const doctorSchema=new mongoose.Schema({
 name:{
-   type:nameSchema,
-    required:[true,"Name of the doctor is required"]
+  //  type:nameSchema,
+  //   required:[true,"Name of the doctor is required"]
+  type:String,
+  required:true,
+  unique: true 
 },
 gender:{
     type:String,
@@ -61,7 +64,7 @@ clinicId:{
   ref:"clinic",
 },
 appointmentId:{
-  type:Number,
+  type:Array,
   ref:"appointment"
 },
 price:{

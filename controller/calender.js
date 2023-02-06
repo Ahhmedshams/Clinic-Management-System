@@ -9,7 +9,7 @@ const calender= mongoose.model('calender');
 const doctors= mongoose.model('doctors');
 //------------------------------------------------------------TODO
 //error status 
-////Edit am pm 
+
 
 // @desc     Get all Calender
 // @route    GET /calender
@@ -27,12 +27,13 @@ exports.createCalender = async (request,response,next) => {
     if (!(request.body.startAt && request.body.endAt && request.body.date)) {
         next(new ErrorResponse("Please Enter a specific time", 422));
     }
-  const startAt = moment(request.body.startAt, "hh:mm");
-  const endAt = moment(request.body.endAt, "hh:mm");
-  const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
-  const timeDiff = moment.duration(endAt.diff(startAt)).asMinutes();
+    const doctorId = parseInt(request.doctorId);
+    const startAt = moment(request.body.startAt, "h:mm a");
+    const endAt = moment(request.body.endAt, "h:mm a");
+    const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
+    const timeDiff = moment.duration(endAt.diff(startAt)).asMinutes();
 
-  console.log( endAt.format("h:mm z" ))
+  console.log( endAt.format("h:mm a" ))
   console.log(timeDiff)
 
   //15 اعاده كشف 
@@ -43,49 +44,52 @@ exports.createCalender = async (request,response,next) => {
         "Error in time period, Please enter the anoter time period" 
         ,403));
     }
-
     calender.findOne({
         weekday: request.body.weekday,
-        startAt: startAt.format("hh:mm"),
-        doctor:  request.doctorId,
+        startAt: startAt.format("h:mm a"),
+        doctor: doctorId,
         date: date,
     }).then(data=>{
         
         if(data){
-            console.log(data)
-            next(new Error("Data")); 
+            next(new Error(" already exist")); 
+        }else{
+
+
+            let newCalenderId;
+  
+            let newCalender = new calender({
+            weekday: request.body.weekday,
+            startAt: startAt.format("h:mm a"),
+            endAt: endAt.format("h:mm a"),
+            duration: timeDiff,
+            date: date,
+            doctor: doctorId,
+          })
+          newCalender.save()
+          .then(result1=>{
+                newCalenderId =result1._id;
+            //Push the  callender to doctor 
+                doctors.findByIdAndUpdate(
+                    { _id: doctorId},
+                    { $push: { calender: newCalenderId } }
+                )
+                .then(result=>{
+                 response.status(201).json(result1)
+                })
+                .catch(error=>{
+                    next(new ErrorResponse(error));
+                })//end of catch ater save update doctor 
+            })
+        .catch(error=>{
+            next(new Error (error));
+        })//end of catch ater save calender
+
+
         }
     })
 
-    let newCalenderId;
-  
-    let newCalender = new calender({
-    weekday: request.body.weekday,
-    startAt: startAt.format("hh:mm"),
-    endAt: endAt.format("hh:mm"),
-    duration: timeDiff,
-    date: date,
-    doctor: request.doctorId,
-  })
-  newCalender.save()
-  .then(result1=>{
-        newCalenderId =result1._id;
-        //response.status(201).json(result)
-    //Push the  callender to doctor 
-        doctors.findByIdAndUpdate(
-            { _id: request.doctorId },
-            { $push: { calender: newCalenderId } }
-        )
-        .then(result=>{
-         response.status(201).json(result1)
-        })
-        .catch(error=>{
-            next(new ErrorResponse(error));
-        })
-    })
-.catch(error=>{
-    next(new Error (error));
-})
+   
 
 }
 

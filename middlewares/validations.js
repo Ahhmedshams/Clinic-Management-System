@@ -5,8 +5,8 @@ exports.patientPost = [
         .withMessage("fName Shoud be string"),
     body("lName").isAlpha()
         .withMessage("lName Shoud be string"),
-    body("gender").isIn(["Female", "Male"])
-        .withMessage("Gender Shoud be One Of ('Female','Male')"),
+    body("gender").isIn(["female", "male"])
+        .withMessage("Gender Shoud be One Of ('female','male')"),
     body("age").optional().isInt()
         .withMessage("Age is required"),
     body("email").isEmail()
@@ -38,8 +38,8 @@ exports.patientUpdate = [
         .withMessage("fName Shoud be string"),
     body("lName").optional().isAlpha()
         .withMessage("lName Shoud be string"),
-    body("gender").optional().isIn(["Female", "Male"])
-        .withMessage("Gender Shoud be One Of ('Female','Male')"),
+    body("gender").optional().isIn(["female", "male"])
+        .withMessage("Gender Shoud be One Of ('female','male')"),
     body("age").optional().isInt()
         .withMessage("Age is required"),
     body("email").optional().isEmail()

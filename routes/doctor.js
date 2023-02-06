@@ -15,7 +15,9 @@ router.use('/doctors/:doctorId/calender',controller.newAppointment,calenderRoute
 
 router.route("/doctors")
       .get(advancedResults(doctors),controller.getAllDoctors)
-      .post(validationObject.addDoctor,validator,controller.addNewDoctor)
+      .post(
+            //validationObject.addDoctor,validator,
+            controller.addNewDoctor)
       .patch(validationObject.updateDoctor,validator,controller.updateDoctor)
       .delete(controller.deleteDoctor)
       
