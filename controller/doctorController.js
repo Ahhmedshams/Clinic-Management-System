@@ -1,8 +1,22 @@
 const express=require("express")
-const doctor=require("./../Model/doctorModel");
+const doctor=require("./../model/doctorModel");
 const mongoose=require("mongoose");
-const { Result } = require("express-validator");
 const doctorSchema=mongoose.model("doctors");
+
+//Shams----------------------------------Reroute to appointment
+exports.newAppointment=(request,response,next)=>{
+    doctorSchema.findOne({_id:request.params.doctorId})
+    .then(data=>{
+        if(data!=null){
+            request.doctorId= request.params.doctorId
+            next()
+        }else{
+            next(new ErrorResponse(`doctor doesn't exist with id of ${request.params.doctorId}`,404))
+        }
+    }).catch(error=>{
+        next(new Error(error))
+    })
+}
 
 exports.getAllDoctors=(request,response,next)=>{
     doctorSchema.find({})
@@ -18,11 +32,11 @@ exports.getAllDoctors=(request,response,next)=>{
 
 exports.addNewDoctor=(request,response,next)=>{
     let newDoctor= new doctorSchema({
-        fullName:request.body.fullName,
+        name:request.body.name,
         gender:request.body.gender,
         email:request.body.email,
         password:request.body.password,
-        phoneNumber:request.body.phoneNumber,
+        phoneNumber:request.body.phone,
         address:request.body.address,
         speciality:request.body.speciality,
         yearsOfExperience:request.body.yearsOfExperience,

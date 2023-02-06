@@ -2,7 +2,7 @@ const ErrorResponse = require('./../utils/errorResponse')
 
 
 const advancedResults = (model,populate)=> async (request,response,next)=>{
-    //copy request.query
+    //copy request.query  
     const reqQuery = {...request.query}
     //fienld to exclude
     const removeFields =['select','sort', 'limit', 'page'];
@@ -19,7 +19,7 @@ const advancedResults = (model,populate)=> async (request,response,next)=>{
     //Pagination
     const page = parseInt(request.query.page) || 1;
     const limit = parseInt(request.query.limit) || 25;
-    //----Test                     4
+    //----Test                     
     const startIndex = (page-1) * limit;
     const endIndex = page * limit;
     const total = await model.countDocuments();
@@ -37,7 +37,7 @@ const advancedResults = (model,populate)=> async (request,response,next)=>{
         }
     } 
     //Find resource
-   let res = await model.find(JSON.parse(queryStr))
+  await model.find(JSON.parse(queryStr))
     .select(fields)
     .sort(sortBy)
     .limit(limit)

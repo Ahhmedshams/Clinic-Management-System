@@ -7,7 +7,7 @@ require('./../model/patient');
 const patient= mongoose.model('patient');
 
 
-exports.edelo = (request,response,next)=>{
+exports.newAppointment = (request,response,next)=>{
     
     patient.findOne({_id:request.params.patientId})
     .then(data=>{
@@ -18,9 +18,8 @@ exports.edelo = (request,response,next)=>{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.patientId}`,404))
         }
     }).catch(error=>{
-        next(new Error())
+        next(new Error(error))
     })
-    // console.log(response.patientId)
     
 }
 
@@ -28,7 +27,6 @@ exports.edelo = (request,response,next)=>{
 // @route    GET /patient
 // @access   Public
 exports.getPatients =  (request,response,next)=>{
-
     response.status(200).json(response.advancedResults)
 }
 

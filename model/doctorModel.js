@@ -1,19 +1,6 @@
 const mongoose=require("mongoose");
 //ToDo Hashing password , ProfileImage , Certificate image or strings
 
-//? full name Schema 
-const nameSchema = new mongoose.Schema({
-    firstName: {
-      type: String,
-      required:true
-    },
-    lastName: {
-      type: String,
-      required:true
-    }
-  });
-  
-  nameSchema.index({ firstName: 1, lastName: 1 }, { unique: true });
 
 //? Address Schema
 const addressSchema=new mongoose.Schema({
@@ -24,37 +11,7 @@ const addressSchema=new mongoose.Schema({
 
 //? Calender Schema
 
-const CalendarSchema = new mongoose.Schema({
-    day:{
-        type:String,
-        enum:
-        [
-            "السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة",
-            "saturday","sunday","monday","tuesday","wednesday","thurday","friday"
-        ]
-    },
-    date:{
-        type:String
-    },
-    startAt:
-    {
-        type:String,
-        // required:true
-    },
-    endAt:
-    {
-        type:String,
-        // required:true
-    },
-    duration:
-    {
-        type:Number,
-    },
-    description:
-    {
-        type:String
-    }
-  });
+
 
   //? Certificate schema
 
@@ -80,33 +37,29 @@ const doctorSchema=new mongoose.Schema({
 _id:{
     type:mongoose.Types.ObjectId,
     auto:true,
-},
-fullName:{
-   type:nameSchema,
-    // type:String,
-    required:[true,"Full Name of the doctor is required"]
-    // unique:true,
-},
-image:{
-
+  },
+name:{
+  type:String,
+  required:[true,'Please add a name'],
+  trim:true,
+  maxlength:[50,'Name can not be more than 50 characters']
 },
 gender:{
-    type:String,
-    match:/(?:m|M|male|Male|f|F|female|Female|FEMALE|MALE|Not prefer to say)$/,
-    // enum:["m","M","male","Male","f","F","femal","Female","FEMALE","MALE","not prefer to say],
-    required:[true,"Gender of the doctor is required"]
+  type:String,
+  match:/(?:m|M|male|Male|f|F|female|Female|FEMALE|MALE|Not prefer to say)$/,
+  required:[true,"Gender of the doctor is required"]
+},
+age:{
+  type:Number
 },
 email:{
-    type:String,
-    match: [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]+)*$/,"Please enter a valid email"],
-    unique: [true,"This email is already exist"],
-    trim: true,
-    required:true,
+  type:String,
+  required:true,
+  unique:true,
+  match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,'Please add A valid email']
 },
-password: {
-    type:String,
-    required:true
-  },
+password:{type:String,required:true},
+
 phoneNumber:{
     type:String,
     match:[/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,"It is not a valid phone or line number"],
@@ -127,11 +80,7 @@ speciality:{
 yearsOfExperience: {
     type: Number,
 },
-calender:{
-    type:CalendarSchema,
-    // required:[true,"Calender of the doctor is required"]
-},
-
+calender:{type:Array, ref:"calender"},
 certificate:{
     type:CertificateSchema
 },
@@ -144,16 +93,5 @@ appointmentId:{
 
 },
 })
-// doctorSchema.pre('save', function(next) {
-//     const self = this;
-//     mongoose.models.doctors.findOne({ 'FullName.firstName': self.name.firstName, 'name.lastName': self.name.lastName }, function(err, doctor) {
-//       if (err) {
-//         return next(err);
-//       }
-//       if (doctor) {
-//         return next(new Error(`Doctor with full name "${self.name.firstName} ${self.name.lastName}" already exists`));
-//       }
-//       return next();
-//     });
-//   });
+
 mongoose.model("doctors",doctorSchema);

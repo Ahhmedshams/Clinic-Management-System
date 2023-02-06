@@ -12,7 +12,7 @@ const appointmentRouter = require("./routes/appointment");
 const medicineRouter=require("./routes/medicineRouter");
 const rescriptionRouter=require("./routes/rescription");
 const doctorRouter = require("./routes/doctorRoute");
-
+const calender = require("./routes/doctorsCalender")
 //Server
 const server = express();
 
@@ -44,7 +44,7 @@ server.use("/appointment",appointmentRouter)
 server.use("/medicines",medicineRouter);
 server.use(rescriptionRouter);
 server.use(doctorRouter);
-
+server.use("/calender",calender);
 
 
 //Not Found Middleware

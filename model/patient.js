@@ -28,9 +28,9 @@ const schema = new mongoose.Schema({
     password:{type:String,required:true},
     phone:{type:Number,minlength:10, maxlength:14},
     address:schemas.addressSchema,
-    appointment:[],
-    prescriptions:[],
-    invoices:[]
+    appointment:{type:Array , ref :'appintment'},
+    prescriptions:{type:Array , ref :'prescription'},
+    invoices:{type:Array , ref :'invoice'}
 },{_id:false});
 
 

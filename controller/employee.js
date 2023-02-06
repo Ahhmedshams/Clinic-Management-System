@@ -34,6 +34,9 @@ exports.getEmployeeById=(request,response,next)=>{
 
 //Add New Employee
 exports.addEmployee = (request, response, next) => {
+
+
+
     let newEmp = new employeeSchema({
         fullName: request.body.fullName,
         hireDate: new Date().toLocaleDateString(),
