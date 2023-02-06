@@ -12,5 +12,9 @@ router
   .patch(VPrescription, PrescriptionController.updaterecriptiondata) 
   .delete(PrescriptionController.deleterecriptiondata) ;
 
+  
+router.route("/")
+.get(PrescriptionController.getAllrecriptiondata)
+.post(PrescriptionController.addrecriptiondata)
 
 module.exports = router;

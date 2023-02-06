@@ -7,7 +7,7 @@ require('./../model/patient');
 const patient= mongoose.model('patient');
 
 
-exports.newAppointment = (request,response,next)=>{
+exports.edelo = (request,response,next)=>{
     
     patient.findOne({_id:request.params.patientId})
     .then(data=>{
@@ -18,8 +18,9 @@ exports.newAppointment = (request,response,next)=>{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.patientId}`,404))
         }
     }).catch(error=>{
-        next(new Error(error))
+        next(new Error())
     })
+    // console.log(response.patientId)
     
 }
 
@@ -27,6 +28,7 @@ exports.newAppointment = (request,response,next)=>{
 // @route    GET /patient
 // @access   Public
 exports.getPatients =  (request,response,next)=>{
+
     response.status(200).json(response.advancedResults)
 }
 
@@ -51,7 +53,7 @@ exports.getPatient =(request,response,next)=>{
 exports.createPatient =(request,response,next)=>{
     let newPatient = new patient({
         name: request.body.fName +" "+ request.body.lName,
-        gender:request.body.gender,
+        sex:request.body.gender,
         age:request.body.age,
         email:request.body.email,
         password:request.body.password,
@@ -80,7 +82,7 @@ exports.updatePatient =(request,response,next)=>{
     },{
         $set:{
             name:request.body.fullName,
-            gender:request.body.gender,
+            sex:request.body.gender,
             age:request.body.age,
             email:request.body.email,
             password:request.body.password,

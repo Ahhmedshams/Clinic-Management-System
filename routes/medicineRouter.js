@@ -8,7 +8,7 @@ const router=express.Router();
 
 router.get('',MedicineController.getAllMedicines)
 .get('/:_id',MedicineController.getMedicineID)
-// .get('/:DrugName',MedicineController.getMedicineName)
+.get('/:DrugName',MedicineController.getMedicineName)
 .post("",medicineScemaValidator   ,MedicineController.addNewMedicine)
 .delete("/:_id",MedicineController.deleteMedicine)
 .patch("",MedicineController.updateMedicineData)

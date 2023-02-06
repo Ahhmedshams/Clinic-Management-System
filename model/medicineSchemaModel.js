@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 const  autoIncrement = require('mongoose-sequence')(mongoose);
-const bcrypt = require("bcrypt");
+// const bcrypt = require("bcrypt");
 
 
 const MedicineScema = new mongoose.Schema({

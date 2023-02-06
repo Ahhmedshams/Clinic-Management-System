@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
-const Schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
     _id: Number,
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unquie: true },
     email: {
-        type: String, required: true, trim: true, lowercase: true, unique: true,
+        type: String, required: true, trim: true, lowercase: true, unquie: true,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
     location: { type: String, required: true },
@@ -17,11 +17,11 @@ const Schema = new mongoose.Schema({
             message: 'this Specialization is not supported'
         }
     },
-    medicines: { type: Array, ref: "medicine" },
-    doctors: { type: Array, ref: "doctor" },
-    employees: { type: Array, ref: "employee" },
-    Patient: { type: Array, ref: "patient" }
-}, { _id: false })
+    medicines: {type:Array, ref:"medicine"},
+    doctors: {type:Array, ref:"doctor"},
+    employees: {type:Array, ref:"employee"},
+    Patient: {type:Array, ref:"patient"}
+},{_id:false})
 // schema.pre('save', async function (next) {
 //     const salt = await bcrypt.genSalt();
 //     this.password = await bcrypt.hash(this.password, salt)
@@ -29,6 +29,6 @@ const Schema = new mongoose.Schema({
 // })
 //
 
-Schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
+ schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
 
-mongoose.model("clinic", Schema);
+mongoose.model("clinic", schema);

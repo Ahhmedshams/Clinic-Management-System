@@ -5,8 +5,8 @@ require("./../Model/clinic");
 const ClinicSchema = mongoose.model("clinic");
 
 exports.getAllclinics = (request, response, next) => {
-
-    response.status(200).json(response.advancedResults)
+    
+    response.status(200).json(response.advancedResults)        
 }
 
 
@@ -30,7 +30,7 @@ exports.addClinic = (request, response, next) => {
 
 exports.updateClinic = (request, response, next) => {
     ClinicSchema.updateOne({
-        _id: request.params.id,
+        _id: request.body.id,
     }, {
         $set: {
             name: request.body.name,
@@ -45,8 +45,6 @@ exports.updateClinic = (request, response, next) => {
         .then(result => {
             if (result.matchedCount == 0) {
                 throw new Error("This Clinic is not found");
-            } else if (result.modifiedCount == 0) {
-                response.status(200).json({ "message": "No update Occured" })
             } else {
                 response.status(200).json({ "message": "Clinic is updated" })
             }
