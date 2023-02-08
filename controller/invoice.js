@@ -68,3 +68,14 @@ exports.deleteInvoiceByID = (request, response, next) => {
         })
         .catch(error => next(error))
 }
+exports.getDoctor = (request, response, next) => {
+    InvoiceSchema.findById(request.params.id)
+        .populate({
+            path: "doctor",
+            select: { _id: 0 }
+        })
+        .then((data) => {
+            response.status(200).json(data.doctor)
+        })
+        .catch(error => next(error))
+}

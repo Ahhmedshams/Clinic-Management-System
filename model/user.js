@@ -21,22 +21,33 @@ const Schema = new mongoose.Schema({
     patientRef_id: {
         type: Number,
         ref: 'patient',
-        default:0
+        default: 0
     },
     employeeRef_id: {
         type: Number,
         ref: 'employee',
-        default:0
+        default: 0
     },
     doctorsRef_id: {
         type: Number,
         ref: 'doctors',
-        default:0
+        default: 0
     }
 }, { _id: false })
 
 
 Schema.pre('save', async function (next) {
+    try {
+        const salt = await bcrypt.genSalt(12);
+        const hasdedPassword = await bcrypt.hash(this.password, salt);
+        this.password = hasdedPassword;
+        next()
+    }
+    catch (error) {
+        next(error);
+    }
+})
+Schema.pre('update', async function (next) {
     try {
         const salt = await bcrypt.genSalt(12);
         const hasdedPassword = await bcrypt.hash(this.password, salt);

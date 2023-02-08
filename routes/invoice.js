@@ -23,5 +23,6 @@ router.get("/invoice/:id",
 router.delete("/invoice/:id",
     validator, controller.deleteInvoiceByID)
 
+router.get("/invoice/doctor", validator, controller.getDoctor)
 
 module.exports = router;

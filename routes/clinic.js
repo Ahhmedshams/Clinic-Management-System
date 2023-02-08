@@ -13,15 +13,27 @@ const clinic = mongoose.model('clinic');
 router.route("/clinic")
     .get(advancedResults(clinic), controller.getAllclinics)
     .post(expressValidation.clinicPost, validator, controller.addClinic)
-    .patch(expressValidation.clinicUpdate, validator, controller.updateClinic)
 
 
-router.get("/clinic/:id",
-    validator,
-    controller.getClinicByID)
+router.route("/clinic/:id")
+    .get(expressValidation.paramIdInt, validator, controller.getClinicByID)
+    .delete(expressValidation.paramIdInt, validator, controller.getClinicByID)
+    .patch(expressValidation.patientUpdate, validator, controller.updateClinic)
 
-router.delete("/clinic/:id",
-    validator, controller.deleteClinicByID)
+router.route("/clinic/:id/doctor")
+    .get(expressValidation.paramIdInt, validator, controller.getDoctors)
+    .post(expressValidation.paramIdInt, validator, controller.pushDoctors)
+    .delete(expressValidation.paramIdInt, validator, controller.deleteDoctor)
 
+router.route("/clinic/:id/medicien")
+    .get(expressValidation.paramIdInt, validator, controller.getAllclinics)
+    .post(expressValidation.paramIdInt, validator, controller.pushMedicien)
+    .delete(expressValidation.paramIdInt, validator, controller.deleteMedicien)
+
+router.route("/clinic/:id/employee")
+    .get(expressValidation.paramIdInt, validator, controller.getEmployees)
+    .post(expressValidation.paramIdInt, validator, controller.pushEmployee)
+    .delete(expressValidation.paramIdInt, validator, controller.deleteEmployee)
 
 module.exports = router;
+
