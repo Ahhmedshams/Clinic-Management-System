@@ -100,7 +100,6 @@ exports.pushDoctors = (request, response, next) => {
                 })
             }
         })
-
 }
 
 exports.deleteDoctor = (request, response, next) => {
