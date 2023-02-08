@@ -1,9 +1,8 @@
-
 // app.request(express.json())
 const { request, response, json } = require("express");
 
 const mongoose = require("mongoose");
-
+const ErrorResponse = require('./../utils/errorResponse')
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
 require("../model/invoice");
@@ -13,7 +12,7 @@ const InvoiceSchema = mongoose.model("invoice");
 const patientSchema = mongoose.model("patient");
 const doctorSchema = mongoose.model("doctors");
 
-exports.payment = async function (req, res, next) {
+exports.payment = async function (request, response, next) {
 
   // const invoice = InvoiceSchema.findOne({ _id: req.params.invoiceId }, {});
   // const invoceDetails = await invoice.exec();
@@ -58,8 +57,7 @@ exports.payment = async function (req, res, next) {
   //   }
   // };
 
-  let patient = await patientSchema.findOne({ _id: req.id });
-  let doctor = await doctorSchema.findOne({ _id: req.params.doctorId });
+
 
   const token = await stripe.tokens.create({
     card: {
@@ -72,13 +70,24 @@ exports.payment = async function (req, res, next) {
 
   // Moreover you can take more details from user
   // like Address, Name, etc from form
-  {
+  try {
+
+    const patient = await patientSchema.findOne({ _id: request.id });
+
+    if (!patient)
+      return next(new ErrorResponse("Patient Doesn't Exist", 404));
+
+    const doctor = await doctorSchema.findOne({ _id: request.params.doctorId });
+
+    if (!doctor)
+      return next(new ErrorResponse("Doctor Doesn't Exist", 404))
+
     stripe.customers.create({
 
       email: patient.email,
       source: token.id,
       name: patient.name,
-      address: patient.address
+      // address: patient.address
     })
       .then((customer) => {
 
@@ -95,55 +104,71 @@ exports.payment = async function (req, res, next) {
           paymentType: "Credit Card",
           totalCost: doctor.price * 100,
           date: Date.now(),
-          doctor: doctor.name,
-          patient: patient.name,
+          doctorId: doctor._id,
+          patientId: patient._id,
           status: "Success"
           // small 
         })
         newInvoice.save()
           .then(result => {
-            response.status(201).json(result);
+            response.status(201).json({
+              success: true
+            });
           })
-          .catch(error => next(error))
+          .catch(error => next(new ErrorResponse(error.message)))
         response.status(201).json({ success: "true" })
       })
-
       .catch(err => {
         let newInvoice = new InvoiceSchema({
           paymentType: "Credit Card",
           totalCost: doctor.price * 100,
           date: Date.now(),
-          doctor: doctor.name,
-          patient: patient.name,
+          doctorId: doctor._id,
+          patientId: patient._id,
           status: "Failed"
           // small 
         })
         newInvoice.save()
-          .then(result => {
-            response.status(201).json(result);
-          })
-          .catch(error => next(error))
-        next(err)
-      }
-      )
+        next(new ErrorResponse(err.message))
+      });
 
+  } catch (e) {
+    return next(new ErrorResponse(e.message))
   }
 }
+  exports.paymentWithCash = async (request, response, next) => {
+
+    try {
+
+      const patient = await patientSchema.findOne({ _id: request.id });
+
+      if (!patient)
+        return next(new ErrorResponse("Patient Doesn't Exist", 404));
+
+      const doctor = await doctorSchema.findOne({ _id: request.params.doctorId });
+
+      if (!doctor)
+        return next(new ErrorResponse("Doctor Doesn't Exist", 404))
 
 
-exports.paymentWithCash = () => {
-  let newInvoice = new InvoiceSchema({
-    paymentType: "Cash",
-    totalCost: doctor.price,
-    date: Date.now(),
-    doctor: doctor.name,
-    patient: patient.name,
-    status:"success"
-  })
-  newInvoice.save()
-          .then(result => {
-            response.status(201).json(result);
-          })
-          .catch(error => next(error))
-        next(err)
-}
+      let newInvoice = new InvoiceSchema({
+
+        paymentType: "Cash",
+        totalCost: doctor.price * 100,
+        date: Date.now(),
+        doctorId: doctor._id,
+        patientId: patient._id,
+        status: "Success"
+      })
+      newInvoice.save()
+        .then(invoice => {
+          response.status(201).json(
+            {
+              success: "true"
+            });
+        })
+        .catch(error => next(error.message))
+    }catch(e){
+      return next(new ErrorResponse(e.message))
+    }
+  }
