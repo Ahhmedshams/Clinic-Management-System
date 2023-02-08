@@ -7,8 +7,7 @@ const advancedResults = require ("./../middlewares/advancedResult");
 
 require('./../model/appointment');
 const appointment= mongoose.model('appointment');
-const router = express.Router();
-
+const router = express.Router({caseSensitive:false});
 
 
 router.route("/")
@@ -21,8 +20,10 @@ router.route("/:id")
 .delete(validation.paramIdInt,validator, controller.deleteAppointment)
 .patch(validation.appointmentUpdate,validator,controller.updateAppointment)
 
-router.route("//allreports")
-.get(controller.getAllreport)
+
+
+router
+.get("//allreports",controller.getAllreport)
 router.route("//dailyreports")
 .get(controller.getDailyreport)
 //doctor appointment

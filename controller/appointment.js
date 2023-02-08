@@ -3,7 +3,6 @@ var momentDurationFormatSetup = require("moment-duration-format");
 const asyncHandler = require("express-async-handler");
 const mongoose = require('mongoose');
 const ErrorResponse = require('./../utils/errorResponse');
-const { request, response } = require("express");
 
 require('./../model/appointment');
 require('./../model/doctorCalender');
@@ -29,14 +28,12 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
     let duration;
     let query ;
     //prepare search Object 
-    console.log(request.body.doctorName)
     try{
         query  = await doctors.findOne({name:request.body.doctorName})
         let  doctorObject = await query
         if(doctorObject.length==0){
             next(new ErrorResponse('Wrong Doctor Name'))
         }
-        console.log(doctorObject)
 
         query  = await calender.findOne({
                 weekday: request.body.weekday,
@@ -46,7 +43,7 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
                 })
 
         let calenderObject = await query;
-        console.log(calenderObject)
+
         if(calenderObject){
             //create new appointment
             let newAppointment = new appointment({
@@ -102,8 +99,8 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
 exports.getAppointment = async (request,response,next)=>{
     
     let query ;
-    if(response.patientId){
-        query = appointment.find({patientId: response.patientId})
+    if(request.patientId){
+        query = appointment.find({patientId: request.patientId})
         const appointments= await query;
         response.status(200).json({
             success:true,
@@ -153,7 +150,7 @@ exports.updateAppointment = async (request,response,next)=>{
             let calenderObject = await query;
             console.log(calenderObject)
             if(calenderObject){
-                            //لو الوقت متاح عند الدكتور 
+
                 //update appointment 
                 appointment.find({
                         _id:request.params.id
@@ -162,7 +159,6 @@ exports.updateAppointment = async (request,response,next)=>{
                             time:startAt.format("h:mm a")
                         }
                     })
-                    // $push: { schedule:  appointmentObject.time } 
                 calender.findByIdAndUpdate(
                     {_id: calenderObject._id},
                     { $pull: { schedule: { $in: [startAt.format("h:mm a")] } }   },

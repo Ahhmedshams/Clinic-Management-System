@@ -26,7 +26,6 @@ const schema = new mongoose.Schema({
         unique:true,
         match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,'Please add A valid email']
     },
-    password:{type:String,required:true},
     phone:{
         type:Number,
         match:[/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,"It is not a valid phone or line number"],
@@ -53,5 +52,15 @@ schema.pre('save',async function (next){
 })
 
 schema.plugin(autoIncrement, {id: 'patient_id_counter', inc_field: '_id' });
+
+
+// Cascade delete appointment when a patient is deleted
+schema.pre('remove', async function(next) {
+    console.log(`appointment being removed from patient ${this._id}`);
+    await this.model('appointment').deleteMany({ patientId: this._id });
+    await this.model('users').deleteMany({ patientRef_id:  this._id });
+    next();
+  });
+
 
 mongoose.model('patient',schema)

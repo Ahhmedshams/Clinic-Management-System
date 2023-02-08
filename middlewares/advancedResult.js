@@ -1,7 +1,7 @@
 const ErrorResponse = require('./../utils/errorResponse')
 
 
-const advancedResults = (model,populate)=> async (request,response,next)=>{
+const advancedResults = (model, populate)=> async (request,response,next)=>{
     //copy request.query  
     const reqQuery = {...request.query}
     //fienld to exclude
@@ -36,6 +36,26 @@ const advancedResults = (model,populate)=> async (request,response,next)=>{
             limit
         }
     } 
+    if(populate){
+        await model.find(JSON.parse(queryStr))
+    .select(fields)
+    .sort(sortBy)
+    .limit(limit)
+    .skip(startIndex)
+    .populate(populate)
+    .then(data=>{
+        response.advancedResults ={
+            success: true,
+            count: data.length,
+            pagination,
+            data:data 
+        }
+        next()
+    })
+    .catch(error=>{
+        next(new ErrorResponse(404))
+    })
+    }
     //Find resource
   await model.find(JSON.parse(queryStr))
     .select(fields)

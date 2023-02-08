@@ -1,5 +1,5 @@
 const { json } = require('express');
-const expressAsyncHandler = require('express-async-handler');
+const  asyncHandler =require('express-async-handler');
 const mongoose = require('mongoose');
 const ErrorResponse = require('./../utils/errorResponse')
 
@@ -14,7 +14,7 @@ exports.newAppointment = (request,response,next)=>{
     patient.findOne({_id:request.params.patientId})
     .then(data=>{
         if(data!=null){
-            response.patientId= request.params.patientId
+            request.patientId= request.params.patientId
             next()
         }else{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.patientId}`,404))
@@ -62,7 +62,6 @@ exports.createPatient = async (request,response,next)=>{
             gender: request.body.gender,
             age: request.body.age,
             email: request.body.email,
-            password: request.body.password,
             phone: request.body.phone,
             address: request.body.address,
         })
@@ -113,7 +112,6 @@ exports.updatePatient =(request,response,next)=>{
                 sex: request.body.gender,
                 age: request.body.age,
                 email: request.body.email,
-                password: request.body.password,
                 phone: request.body.phone,
                 address: request.body.address,
             }
@@ -136,17 +134,28 @@ exports.updatePatient =(request,response,next)=>{
 // @desc     Delete Patient
 // @route    DELETE /patient/:id
 // @access   ----
-exports.deletePatient = (request, response, next) => {
-    user.deleteOne({ patientRef_id: request.params.id }).then((res) => {
-        patient.deleteOne({ _id: request.params.id })
-            .then(data => {
-                if (data.deletedCount == 0) {
-                    next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
-                } else {
-                    user.findOneAndDelete({ patientRef_id: request.params.id })
-                    response.status(200).json({ success: true, messege: "Delete done successfully" })
+// exports.deletePatient = (request, response, next) => {
+//     user.deleteOne({ patientRef_id: request.params.id }).then((res) => {
+//         patient.deleteOne({ _id: request.params.id })
+//             .then(data => {
+//                 if (data.deletedCount == 0) {
+//                     next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
+//                 } else {
+//                     user.findOneAndDelete({ patientRef_id: request.params.id })
+//                     response.status(200).json({ success: true, messege: "Delete done successfully" })
+                    
+//                 }
+//             }).catch(error => next(new ErrorResponse(error)))
+//     })
+// }
 
-                }
-            }).catch(error => next(new ErrorResponse(error)))
-    })
+exports.deletePatient = async  (request, response, next) => {
+    const patientObject = await patient.findById(req.params.id);
+    if (!patientObject) {
+        return next(
+          new ErrorResponse(`patient not found with id of ${req.params.id}`, 404)
+        );
+      }
+      patientObject.remove();
+      response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

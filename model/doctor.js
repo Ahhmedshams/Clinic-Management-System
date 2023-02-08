@@ -15,6 +15,9 @@ const doctorSchema = new mongoose.Schema({
     enum: ['male', 'female'],
     required: [true, "Gender of the doctor is required"]
   },
+  imge:{
+    type:String,
+  },
   email: {
     type: String,
     match: [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]+)*$/, "Please enter a valid email"],

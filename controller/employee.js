@@ -1,10 +1,14 @@
 const { request, response, json } = require("express");
 const mongoose = require("mongoose");
+const ErrorResponse = require('./../utils/errorResponse')
+
 
 
 require("../model/employee")
 const employeeSchema = mongoose.model("employee")
 
+require('./../model/user');
+const user = mongoose.model("users");
 
 
 
@@ -33,78 +37,77 @@ exports.getEmployeeById=(request,response,next)=>{
 
 
 //Add New Employee
-exports.addEmployee = (request, response, next) => {
+exports.addEmployee = async(request, response, next) => {
+    let empExist = await employeeSchema.count({ email: request.body.email });
+    if (!empExist) {
     let newEmp = new employeeSchema({
-        fullName: request.body.fullName,
-        hireDate: new Date().toLocaleDateString(),
+        name: request.body.name,
+        hireDate: request.body.hireDate,
         birth_date: request.body.birth_date,
         email: request.body.email,
-        userName: request.body.userName,
-        role: request.body.role,
         salary: request.body.salary,
         phone: request.body.phone,
         gender: request.body.gender,
-        password: request.body.password,
         address: request.body.address
     });
     newEmp.save()
         .then(result => {
+            let newUser = new user({
+                password: request.body.password,
+                email: request.body.email,
+                role: "employee",
+                employeeRef_id: result._id
+            })
+            newUser.save()
             response.status(201).json(result)
         }).catch(err => next(err))
+}else {
+    next(new Error("This employee is already exist :) "));
+}
 }
 
 
 
-//Update Employee By Id In Body
+//U
 exports.updateEmployee = (request, response, next) => {
+    user.updateOne({
+        employeeRef_id: request.params.id
+    }, {
+        $set: {
+            email: request.body.email,
+            password: request.body.password,
+            role: "employee"
+        }
+    }).then(res => {
     employeeSchema.updateOne({
-        _id: request.body.id
+        _id: request.params.id
     },
         {
             $set: {
-                fullName: request.body.fullName,
+                name: request.body.name,
                 hireDate: request.body.hireDate,
                 birth_date: request.body.birth_date,
                 email: request.body.email,
-                userName: request.body.userName,
-                role: request.body.role,
                 salary: request.body.salary,
                 phone: request.body.phone,
                 gender: request.body.gender,
-                password: request.body.password,
                 address: request.body.address
             }
-        }).then(result => {
-            response.status(201).json(result)
-        })
-        .catch(error => next(error))
-}
-
-
-
-
-//Update Employee By Id In params
-exports.updateEmployeeById = (request, response, next) => {
-    employeeSchema.updateOne({ _id: request.params.id },
-        {
-            $set: {
-                fullName: request.body.fullName,
-                hireDate: request.body.hireDate,
-                birth_date: request.body.birth_date,
-                email: request.body.email,
-                userName: request.body.userName,
-                role: request.body.role,
-                salary: request.body.salary,
-                phone: request.body.phone,
-                gender: request.body.gender,
-                password: request.body.password,
-                address: request.body.address
+        }).then(data => {
+            if (data.matchedCount == 0) {
+                next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
+            } else {
+                if (data.modifiedCount == 0) {
+                    next(new ErrorResponse("No changes happen", 400))
+                } else {
+                    response.status(201).json({ success: true, message: "Update patient" })
+                }
             }
-        }).then(result => {
-            response.status(201).json(result)
         })
         .catch(error => next(error))
+})
 }
+
 
 
 
@@ -115,8 +118,8 @@ exports.deleteChildById=(request,response,next)=>{
         {
             _id:request.params.id
         })
-    .then(data=>response.status(201).json(
+    .then(data=>
         {
-            message:'Deleted'
-        }))
+            user.findOneAndDelete({ employeeRef_id: request.params.id })
+            response.status(201).json( {message:'Deleted'})})
 }

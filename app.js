@@ -1,7 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const errorHandler = require("./middlewares/error")
+const errorHandler = require("./middlewares/error");
+//images
+const multer = require('multer');
+const path = require('path');
+// body parser for json | urlencoded if form
+const body_parser = require('body-parser');
 //Load env 
 require('dotenv').config();
 
@@ -17,6 +22,28 @@ const doctorRouter = require("./routes/doctor");
 const calender = require("./routes/doctorsCalender")
 const invoiceRouter = require("./routes/invoice");
 const paymentRouter=require("./routes/payment");
+
+
+//var for store image 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // direname =>manage OS (w|linux) diraction of file(path)
+        cb(null, path.join(__dirname, "images"))
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toLocaleDateString("en-US").replace(/\//g, "-") + "=" + file.originalname);
+
+    }
+})
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype == "image.jpg" || file.mimetype == "image.png" || file.mimetype == "image/jpeg") {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+}
+
 
 //Server
 const server = express();
@@ -37,16 +64,30 @@ mongoose.connect(process.env.DB_URL)
 //Morgan middleware --- Logger 
 server.use(morgan('tiny'))
 
+//  cross domain to access from any web to my website =>(codepen)
+server.use((request, response, next) => {
+    response.header("Access-Controll-Allow-Origin", "*"); // access for all
+    response.header("Access-Controll-Allow-Method", "POST,DELETE,PUT,GET,OPTIONS"); //OPTIONS =>for detect error in browser and handle it
+    response.header("Access-Controll-Allow-Headers", "Content-Type,Authorization");  //handle req & response Auth & fetch
+    next();
+});
+
 
 // Body Parser (Convert body data to Json format)
 server.use(express.json())
+
+
+// if json data or url (form )   =>undefined
+server.use(multer({ storage, fileFilter }).single('image'));  // image name of field in input of user  binary data
+server.use(body_parser.json());
+server.use(body_parser.urlencoded({ extended: false })); // pure not object 
 
 //Routes
 server.use(userRouter)
 server.use(patientRouter)
 server.use(clinicRouter)
 server.use(employeeRouter)
-server.use("/appointment", appointmentRouter)
+server.use( "/appointment",appointmentRouter)
 server.use("/medicines",medicineRouter);
 server.use(rescriptionRouter);
 server.use(doctorRouter);

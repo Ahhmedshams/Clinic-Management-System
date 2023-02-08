@@ -17,7 +17,8 @@ router.route("/")
 
 router.route("/:id")
 .delete(validation.paramIdInt,controller.deleteMedicine)
-.patch(validation.paramIdInt,validator,controller.updateMedicineData)
 .get(validation.paramIdInt,controller.getMedicineID)
+.patch(validation.medicineUpdate,validator,controller.updateMedicineData)
+
 
 module.exports=router;

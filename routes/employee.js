@@ -13,7 +13,6 @@ const router = express.Router();
 router.route("/employee")
 .get(advancedResults(employee),employeeController.getAllEmployees)
 .post( validation.employeePost,validator,employeeController.addEmployee)
-.patch(validation.employeeUpdate,validator,employeeController.updateEmployee)
 
 
 //Route ID
@@ -23,6 +22,6 @@ router.route("/employee/:id")
 .delete(
     validation.paramIdInt,validator,employeeController.deleteChildById)
 .patch(
-    validation.paramIdInt,validator,employeeController.updateEmployeeById)
+    validation.paramIdInt,validator,employeeController.updateEmployee)
 
 module.exports=router;
