@@ -1,8 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const errorHandler = require("./middlewares/error")
-
 const errorHandler = require("./middlewares/error");
 //images
 const multer = require('multer');
