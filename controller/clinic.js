@@ -71,3 +71,33 @@ exports.deleteClinicByID = (request, response, next) => {
         })
         .catch(error => next(error))
 }
+
+exports.getMedicien = (request, response, next) => {
+    ClinicSchema.findById(request.params.id) .populate({path: "medicines", select : {_id:0 }})
+    .then((data) => {
+        response.status(200).json(data.medicines)
+    })
+    .catch(error => next(error))
+}
+
+exports.pushMedicien = (request, response, next) => {
+    ClinicSchema.findByIdAndUpdate(
+        { _id: request.params.id},
+        { $push: { medicines: request.body.medicine } }
+        ).then(data=>{ 
+            response.status(201).json(data.medicines)
+        }).catch(error=>{
+            next(new Error(error))
+        })
+}
+
+exports.deleteMedicien = (request, response, next) => {
+    ClinicSchema.findByIdAndUpdate(
+        { _id: request.params.id},
+        { $pull: { medicines: request.body.medicine } }
+        ).then(data=>{ 
+            response.status(201).json(data.medicines)
+        }).catch(error=>{
+            next(new Error(error))
+        })
+}

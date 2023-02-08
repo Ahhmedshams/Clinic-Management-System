@@ -16,12 +16,18 @@ router.route("/clinic")
     .patch(expressValidation.clinicUpdate, validator, controller.updateClinic)
 
 
-router.get("/clinic/:id",
+router.route("/clinic/:id")
+router.get(
+    expressValidation.paramIdInt,
     validator,
     controller.getClinicByID)
 
-router.delete("/clinic/:id",
-    validator, controller.deleteClinicByID)
+router.delete(expressValidation.paramIdInt, validator, controller.deleteClinicByID)
+
+router.route("/clinic/:id/medicien")
+.get(expressValidation.paramIdInt, validator, controller.getAllclinics)
+.post(expressValidation.paramIdInt, validator, controller.pushMedicien)
+.delete(expressValidation.paramIdInt, validator, controller.deleteMedicien)
 
 
 module.exports = router;

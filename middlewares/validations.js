@@ -285,9 +285,6 @@ exports.doctorPost = [
     body("yearsOfExperience")
         .isNumeric()
         .withMessage("Year of Experience should be number"),
-    body("calender").isArray().withMessage("(Calender of the doctor must be array"),
-    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
-    body("appointmentId").isArray().withMessage("Appointments should be array"),
     body("price").isNumeric().withMessage("Price must be integer")
 ];
 
@@ -335,9 +332,6 @@ exports.updateDoctor = [
         .withMessage(
             "Only Valid Specialties are : cardiology,dentistry,ear,nose,throat,nutrition,dermatology"
         ),
-    body("calender").optional().isArray().withMessage("(Calender of the doctor must be array"),
-    body("clinicId").optional().isNumeric().withMessage("Clinic id should be number"),
-    body("appointmentId").optional().isArray().withMessage("Appointments should be array"),
     body("price").optional().isNumeric().withMessage("Price must be integer")
 ];
 
