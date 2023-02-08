@@ -222,9 +222,7 @@ exports.deleteAppointment = async (request,response,next)=>{
     const id = parseInt(request.params.id);
     appointment.findByIdAndDelete({_id:request.params.id})
     .then(appointment=>{
-        console.log(appointment)
 
-        console.log(appointment.patientId)
         patient.findByIdAndUpdate(
             { _id: appointment.patientId},
             { $pull: { appointment: {$in:[appointment._id]} } }
@@ -255,6 +253,7 @@ exports.deleteAppointment = async (request,response,next)=>{
 // @route    GET /appointment//allreport
 // @access   ----
 exports.getAllreport = (request, response , next)=>{
+    console.log(1)
     appointment.find()
     .populate({path: "doctorId", select : {_id:0 }})
     .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})

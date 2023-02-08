@@ -135,48 +135,48 @@ exports.userUpdate =
 
 //-------------------------calender-----------------------------//
 exports.calenderPost = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("date")
+    body("date")
     .isDate().withMessage("weekday Should be date"),
-    param("startAt")
+    body("startAt")
     .isString().withMessage("startAt Should be time"),
-    param("endAt")
+    body("endAt")
     .isString().withMessage("endAt Should be time"),
 ]
 exports.calenderUpdate = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("date")
+    body("date")
     .optional()
     .isDate().withMessage("weekday Should be date"),
-    param("startAt")
+    body("startAt")
     .optional()
     .isString().withMessage("startAt Should be time"),
-    param("endAt")
+    body("endAt")
     .optional()
     .isString().withMessage("endAt Should be time"),
 ]
 //-------------------------appointment-----------------------------//
 exports.appointmentPost = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("doctorName")
+    body("doctorName")
     .isString().withMessage("doctorName Should be String"),
-    param("startAt")
+    body("startAt")
     .isString().withMessage("startAt Should be time"),
 ]
 exports.appointmentUpdate = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("doctorName")
+    body("doctorName")
     .optional()
     .isString().withMessage("doctorName Should be String"),
-    param("startAt")
+    body("startAt")
     .optional()
     .isString().withMessage("startAt Should be time"),
 ]
