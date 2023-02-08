@@ -38,7 +38,7 @@ exports.addNewDoctor=async(request,response,next)=>{
         name: request.body.name,
         gender: request.body.gender,
         email: request.body.email,
-        image:request.file.filename,
+        //image:request.file.filename,
         phone: request.body.phone,
         address: request.body.address,
         speciality: request.body.speciality,
@@ -63,7 +63,7 @@ exports.addNewDoctor=async(request,response,next)=>{
             .catch(error=>{next(error)})
 }else {
     logger.error(`faild to add doctor with id: ${request.params.id}`);
-    next(new Error("This doctor is already exist!"));
+    next(new Error("This email is already exist!"));
 }
 
 }
@@ -87,7 +87,7 @@ exports.updateDoctor=(request,response,next)=>{
             name: request.body.name,
             gender: request.body.gender,
             email: request.body.email,
-            image:request.file.filename,
+            //image:request.file.filename,
             phone: request.body.phone,
             address: request.body.address,
             speciality: request.body.speciality,

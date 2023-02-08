@@ -216,10 +216,10 @@ exports.doctorPost = [
     body("yearsOfExperience")
         .isNumeric()
         .withMessage("Year of Experience should be number"),
-    body("calender").isArray().withMessage("(Calender of the doctor must be array"),
-    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
-    body("appointmentId").isArray().withMessage("Appointments should be array"),
-    body("price").isNumeric().withMessage("Price must be integer")
+    body("clinicId")
+    .optional().isNumeric().withMessage("Clinic id should be number"),
+    body("price")
+    .optional().isNumeric().withMessage("Price must be integer")
 ];
 
 exports.updateDoctor = [
