@@ -1,10 +1,14 @@
 const express = require("express")
 const mongoose = require("mongoose");
 const ErrorResponse = require('./../utils/errorResponse')
+const LoggerServices = require('./../services/loggerServices')
+
 require("./../model/doctor");
 require('./../model/user');
 const doctorSchema = mongoose.model("doctors");
 const user= mongoose.model('users');
+const logger=new LoggerServices('doctor');
+
 
 // @desc     reRoute
 exports.reRoute = (request, response, next) => {
@@ -22,6 +26,7 @@ exports.reRoute = (request, response, next) => {
 }
 
 exports.getAllDoctors = (request, response, next) => {
+    logger.info(`get doctor list`,response.advancedResults );
     response.status(200).json(response.advancedResults)
 }
 
@@ -52,10 +57,12 @@ exports.addNewDoctor=async(request,response,next)=>{
                     doctorsRef_id: result._id
                 })
                 newUser.save()
+                logger.info(`add doctor with id: ${request.params.id}`,response.advancedResults );
                 response.status(200).json({message:"Doctor added successfully",result })
             })
             .catch(error=>{next(error)})
 }else {
+    logger.error(`faild to add doctor with id: ${request.params.id}`);
     next(new Error("This doctor is already exist!"));
 }
 
@@ -94,9 +101,11 @@ exports.updateDoctor=(request,response,next)=>{
         )
         .then(result=>{
             if(result.matchedCount==0){
+                logger.error(`faild to update doctor with id: ${request.params.id}`);
                 throw new Error("This doctor is not exist");
             }
             else{
+                logger.info(`update Doctor with id: ${request.params.id}`,response.advancedResults );
                 response.status(200).json({message:"Doctor updated successfully"})
             }
         })
@@ -112,9 +121,11 @@ exports.getDoctorById = (request, response, next) => {
     doctorSchema.findOne({ _id: request.params.id })
         .then((data) => {
             if (data != null) {
+                logger.info(`get doctor with id: ${request.params.id}` );
                 response.status(200).json(data)
             }
             else {
+                logger.error(`faild to get doctor with id: ${request.params.id}`);
                 throw new Error("Doctor not found")
             }
         })
@@ -127,10 +138,12 @@ exports.getDoctorById = (request, response, next) => {
 exports.deleteDoctor = async  (request, response, next) => {
     const doctorObject = await doctorSchema.findById(request.params.id);
     if (!doctorObject) {
+        logger.error(`faild to delete doctor with id: ${request.params.id}`);
         return next(
           new ErrorResponse(`doctor not found with id of ${request.params.id}`, 404)
         );
       }
       doctorObject.remove();
+      logger.info(`delete doctor with id: ${request.params.id}`,response.advancedResults );
       response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

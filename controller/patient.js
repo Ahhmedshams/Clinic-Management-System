@@ -2,11 +2,14 @@ const { json } = require('express');
 const  asyncHandler =require('express-async-handler');
 const mongoose = require('mongoose');
 const ErrorResponse = require('./../utils/errorResponse');
+const LoggerServices = require('./../services/loggerServices')
 
 require('./../model/user');
 require('./../model/patient');
 const user = mongoose.model("users");
 const patient= mongoose.model('patient');
+
+const logger=new LoggerServices('patient');
 
 //Re-route
 exports.newAppointment = (request,response,next)=>{
@@ -29,6 +32,7 @@ exports.newAppointment = (request,response,next)=>{
 // @route    GET /patient
 // @access   Public
 exports.getPatients =  (request,response,next)=>{
+    logger.info(`get patient list`,response.advancedResults );
     response.status(200).json(response.advancedResults)
 }
 
@@ -39,6 +43,7 @@ exports.getPatient =(request,response,next)=>{
     patient.findOne({_id:request.params.id})
     .then(data=>{
         if(data!=null){
+            logger.info(`get patient with id: ${request.params.id}` );
             response.status(200).json(data);
         }else{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.id}`,404))
@@ -70,6 +75,7 @@ exports.createPatient = async (request,response,next)=>{
                     patientRef_id: result._id
                 })
                 newUser.save()
+                logger.info(`add patient with id: ${request.params.id}`,response.advancedResults );
                 response.status(201).json(result)
             })
             .catch(error => {
@@ -118,8 +124,10 @@ exports.updatePatient =(request,response,next)=>{
             } else {
 
                 if (data.modifiedCount == 0) {
+                    logger.error(`faild to update patient with id: ${request.params.id}`);
                     next(new ErrorResponse("No changes happen", 400))
                 } else {
+                    logger.info(`update patient with id: ${request.params.id}`,response.advancedResults );
                     response.status(201).json({ success: true, message: "Update patient" })
                 }
             }
@@ -139,6 +147,7 @@ exports.deletePatient = async  (request, response, next) => {
           new ErrorResponse(`patient not found with id of ${request.params.id}`, 404)
         );
       }
+      logger.info(`delete patient with id: ${request.params.id}`,response.advancedResults );
       patientObject.remove();
       response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

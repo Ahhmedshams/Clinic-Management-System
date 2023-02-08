@@ -2,14 +2,17 @@ const { json, request, response } = require('express');
 const expressAsyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const ErrorResponse = require('./../utils/errorResponse')
+const LoggerServices = require('./../services/loggerServices')
 
 require('./../model/user');
 require('./../model/employee')
 const UserSchema = mongoose.model("users");
 const EmployeeSchema = mongoose.model("employee");
+const logger=new LoggerServices('user');
 
 
 exports.getAllUsers = (request, response, next) => {
+    logger.info(`get user list`,response.advancedResults );
     response.status(200).json(response.advancedResults)
 }
 

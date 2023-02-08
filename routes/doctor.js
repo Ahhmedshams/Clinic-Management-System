@@ -3,8 +3,8 @@ const validator = require("../middlewares/errorValidation");
 const validation = require("../middlewares/validations")
 const controller = require("../controller/doctor");
 const calenderRouter = require("./doctorsCalender");
-const appointmentRouter = require("./appointment")
-const { param } = require("express-validator");
+const appointmentRouter = require("./appointment");
+
 require('./../model/doctor');
 
 const mongoose = require('mongoose');

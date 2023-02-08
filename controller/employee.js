@@ -1,14 +1,14 @@
 const { request, response, json } = require("express");
 const mongoose = require("mongoose");
 const ErrorResponse = require('./../utils/errorResponse')
+const LoggerServices = require('./../services/loggerServices')
 
-
-
-require("../model/employee")
-const employeeSchema = mongoose.model("employee")
 
 require('./../model/user');
+require("../model/employee")
+const employeeSchema = mongoose.model("employee")
 const user = mongoose.model("users");
+const logger=new LoggerServices('employee');
 
 
 
@@ -25,10 +25,13 @@ exports.getEmployeeById=(request,response,next)=>{
     employeeSchema.findOne(
         { _id:request.params.id }).populate({ path:"clinicId" , select: { _id:0 , name:1 } })
         .then(data=>{
-            if(data)
-            response.status(200).json(data)
-            else
-            next(new Error("Employee doesn't exist"));
+            if(data){
+                logger.info(`get employee with id: ${request.params.id}`,response.advancedResults );
+                response.status(200).json(data);
+            }
+            else{
+                next(new Error("Employee doesn't exist"));
+            }
         }).catch(error=>next(error))
 }
 
@@ -58,14 +61,14 @@ exports.addEmployee = async(request, response, next) => {
                 employeeRef_id: result._id
             })
             newUser.save()
+            logger.info(`add employee with id: ${request.params.id}`,response.advancedResults );
             response.status(201).json(result)
         }).catch(err => next(err))
 }else {
+    logger.error(`faild to add employee with id: ${request.params.id}`);
     next(new Error("This employee is already exist :) "));
 }
 }
-
-
 
 //U
 exports.updateEmployee = (request, response, next) => {
@@ -94,11 +97,13 @@ exports.updateEmployee = (request, response, next) => {
             }
         }).then(data => {
             if (data.matchedCount == 0) {
+                logger.error(`faild to update employee with id: ${request.params.id}`);
                 next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
             } else {
                 if (data.modifiedCount == 0) {
                     next(new ErrorResponse("No changes happen", 400))
                 } else {
+                    logger.info(`update employee with id: ${request.params.id}`,response.advancedResults );
                     response.status(201).json({ success: true, message: "Update patient" })
                 }
                 address: request.body.address
@@ -110,7 +115,7 @@ exports.updateEmployee = (request, response, next) => {
 
 
 // @desc     Delete employee
-// @route    DELETE /employee/:id
+// @route    DELETE /employee/:idw
 // @access   ----
 exports.deleteById = async  (request, response, next) => {
     const employeeObject = await employeeSchema.findById(request.params.id);
@@ -119,6 +124,7 @@ exports.deleteById = async  (request, response, next) => {
           new ErrorResponse(`employee not found with id of ${request.params.id}`, 404)
         );
       }
+      logger.info(`delete employee with id: ${request.params.id}`,response.advancedResults );
       employeeObject.remove();
       response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

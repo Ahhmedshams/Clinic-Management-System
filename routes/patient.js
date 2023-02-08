@@ -4,7 +4,8 @@ const controller = require("./../controller/patient");
 const validator = require("./../middlewares/errorValidation");
 const validation = require("./../middlewares/validations");
 const advancedResults = require ("./../middlewares/advancedResult");
-const allowedUsers =require("./../middlewares/AuthorizeRole")
+const allowedUsers =require("./../middlewares/AuthorizeRole");
+
 require('./../model/patient');
 const patient= mongoose.model('patient');
 
