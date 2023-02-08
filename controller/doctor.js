@@ -36,7 +36,6 @@ exports.addNewDoctor=async(request,response,next)=>{
         image:request.file.filename,
         phone: request.body.phone,
         address: request.body.address,
-        password: request.body.password,
         speciality: request.body.speciality,
         yearsOfExperience: request.body.yearsOfExperience,
         calender: request.body.calender,
@@ -82,7 +81,6 @@ exports.updateDoctor=(request,response,next)=>{
             gender: request.body.gender,
             email: request.body.email,
             image:request.file.filename,
-            password: request.body.password,
             phone: request.body.phone,
             address: request.body.address,
             speciality: request.body.speciality,
@@ -123,19 +121,16 @@ exports.getDoctorById = (request, response, next) => {
         .catch(error => next(error))
 }
 
-// @desc     Delete Patient
-// @route    DELETE /patient/:id
+// @desc     Delete doctor
+// @route    DELETE /doctor/:id
 // @access   ----
-exports.deleteDoctor = (request, response, next) => {
-    user.deleteOne({ doctorsRef_id: request.params.id }).then((res) => {
-        doctorSchema.deleteOne({ _id: request.params.id })
-            .then(data => {
-                if (data.deletedCount == 0) {
-                    next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
-                } else {
-                    user.findOneAndDelete({ doctorsRef_id: request.params.id })
-                    response.status(200).json({ success: true, messege: "Delete done successfully" })
-                }
-            }).catch(error => next(new ErrorResponse(error)))
-    })
+exports.deleteDoctor = async  (request, response, next) => {
+    const doctorObject = await doctorSchema.findById(request.params.id);
+    if (!doctorObject) {
+        return next(
+          new ErrorResponse(`doctor not found with id of ${request.params.id}`, 404)
+        );
+      }
+      doctorObject.remove();
+      response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

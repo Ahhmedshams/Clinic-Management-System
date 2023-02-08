@@ -54,11 +54,13 @@ schema.pre('save',async function (next){
 schema.plugin(autoIncrement, {id: 'patient_id_counter', inc_field: '_id' });
 
 
-// Cascade delete appointment when a patient is deleted
+// Cascade delete Ref when a patient is deleted
 schema.pre('remove', async function(next) {
     console.log(`appointment being removed from patient ${this._id}`);
     await this.model('appointment').deleteMany({ patientId: this._id });
     await this.model('users').deleteMany({ patientRef_id:  this._id });
+    await this.model('prescription').deleteMany({ patientId:  this._id });
+    await this.model('invoice').deleteMany({ patient:  this._id });
     next();
   });
 

@@ -20,8 +20,8 @@ router.use('/patient/:patientId/appointment',controller.newAppointment,appointme
 
 
 router.route("/patient")
-.get(allowedUsers("admin"),advancedResults(patient),controller.getPatients)
-.post(allowedUsers("admin","patient"),validation.patientPost,validator,controller.createPatient)
+.get(/*allowedUsers("admin"),*/advancedResults(patient),controller.getPatients)
+.post(/*allowedUsers("admin","patient"),*/validation.patientPost,validator,controller.createPatient)
 
 
 router.route("/patient/:id")

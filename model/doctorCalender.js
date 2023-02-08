@@ -31,8 +31,7 @@ const schema = new mongoose.Schema({
             type:Array
         },
         doctor:
-        {
-            
+        { 
             type:Number,
             ref:"doctors",
             required:true
@@ -42,28 +41,4 @@ const schema = new mongoose.Schema({
 schema.plugin(autoIncrement, {id: 'calender_id_counter', inc_field: '_id' });
 
 module.exports = mongoose.model('calender',schema)
-
-
-// 1   , 1,30 
-// 2     ,2,30
-
-
-
-
-// 3,30   2,45 
-// 2,45   3 
-
-
-
-
-// id 
-// email 
-// password 
-// role 
-
-
-
-// p  doc admin 
-// userId { }
-
 

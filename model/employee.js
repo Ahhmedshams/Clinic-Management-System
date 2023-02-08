@@ -29,6 +29,12 @@ const employeeSchema =new mongoose.Schema({
     address:schemas.addressSchema
 },{_id:false})
 
+// Cascade delete Ref when a employee is deleted
+employeeSchema.pre('remove', async function(next) {
+    await this.model('users').deleteMany({ employeeRef_id:  this._id });
+    next();
+  });
+
 
 employeeSchema.plugin(AutoIncrement, {id: 'employee_id_counter', inc_field:'_id'});
 

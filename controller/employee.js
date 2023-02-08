@@ -109,17 +109,16 @@ exports.updateEmployee = (request, response, next) => {
 }
 
 
-
-
-
-//Delete Employee By Id
-exports.deleteChildById=(request,response,next)=>{
-    employeeSchema.deleteOne(
-        {
-            _id:request.params.id
-        })
-    .then(data=>
-        {
-            user.findOneAndDelete({ employeeRef_id: request.params.id })
-            response.status(201).json( {message:'Deleted'})})
+// @desc     Delete employee
+// @route    DELETE /employee/:id
+// @access   ----
+exports.deleteById = async  (request, response, next) => {
+    const employeeObject = await employeeSchema.findById(request.params.id);
+    if (!employeeObject) {
+        return next(
+          new ErrorResponse(`employee not found with id of ${request.params.id}`, 404)
+        );
+      }
+      employeeObject.remove();
+      response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

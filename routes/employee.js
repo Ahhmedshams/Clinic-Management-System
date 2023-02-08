@@ -20,7 +20,7 @@ router.route("/employee/:id")
 .get(
     validation.paramIdInt,validator,employeeController.getEmployeeById)
 .delete(
-    validation.paramIdInt,validator,employeeController.deleteChildById)
+    validation.paramIdInt,validator,employeeController.deleteById)
 .patch(
     validation.paramIdInt,validator,employeeController.updateEmployee)
 

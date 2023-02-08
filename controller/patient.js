@@ -1,9 +1,11 @@
 const { json } = require('express');
 const  asyncHandler =require('express-async-handler');
 const mongoose = require('mongoose');
-const ErrorResponse = require('./../utils/errorResponse')
+const ErrorResponse = require('./../utils/errorResponse');
 
+require('./../model/user');
 require('./../model/patient');
+const user = mongoose.model("users");
 const patient= mongoose.model('patient');
 
 //Re-route
@@ -61,7 +63,7 @@ exports.createPatient = async (request,response,next)=>{
         })
         newPatient.save()
             .then(result => {
-                let newUser = new User({
+                let newUser = new user({
                     password: request.body.password,
                     email: request.body.email,
                     role: "patient",
@@ -89,7 +91,7 @@ exports.updatePatient =(request,response,next)=>{
         next(new ErrorResponse("Empty data", 400))
     }
 
-    User.updateOne({
+    user.updateOne({
         patientRef_id: request.params.id
     }, {
         $set: {
@@ -129,20 +131,6 @@ exports.updatePatient =(request,response,next)=>{
 // @desc     Delete Patient
 // @route    DELETE /patient/:id
 // @access   ----
-// exports.deletePatient = (request, response, next) => {
-//     user.deleteOne({ patientRef_id: request.params.id }).then((res) => {
-//         patient.deleteOne({ _id: request.params.id })
-//             .then(data => {
-//                 if (data.deletedCount == 0) {
-//                     next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
-//                 } else {
-//                     user.findOneAndDelete({ patientRef_id: request.params.id })
-//                     response.status(200).json({ success: true, messege: "Delete done successfully" })
-                    
-//                 }
-//             }).catch(error => next(new ErrorResponse(error)))
-//     })
-// }
 
 exports.deletePatient = async  (request, response, next) => {
     const patientObject = await patient.findById(request.params.id);
