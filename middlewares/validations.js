@@ -129,9 +129,6 @@ exports.invoiceUpdate =
 
 //-------------------------calender-----------------------------//
 exports.calenderPost = [
-    param("weekday")
-        .optional()
-        .isString().withMessage("weekday Should be string"),
     param("date")
         .isDate().withMessage("weekday Should be date"),
     param("startAt")

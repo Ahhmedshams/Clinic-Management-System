@@ -1,14 +1,6 @@
 const mongoose = require('mongoose')
 const autoIncrement = require('mongoose-sequence')(mongoose);
 const schema = new mongoose.Schema({
-        weekday:{
-            type:String,
-            enum:
-            [
-                "saturday","sunday","monday","tuesday","wednesday","thurday","friday"
-            ],
-            required:true
-        },
         date:
         {
             type:String

@@ -24,6 +24,7 @@ const invoiceRouter = require("./routes/invoice");
 const paymentRouter=require("./routes/payment");
 const loginRouter =require("./routes/login");
 const authinticationMw = require("./middlewares/authinticationMw")
+const reportRouter=require("./routes/report");
 
 
 //var for store image 
@@ -90,7 +91,7 @@ server.use(doctorRouter);
 server.use("/calender",calender);
 server.use(invoiceRouter);
 server.use(paymentRouter);
-
+server.use(reportRouter);
 
 
 

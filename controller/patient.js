@@ -83,7 +83,7 @@ exports.createPatient = async (request,response,next)=>{
                 next(error);
             })
     } else {
-        next(new Error("This patient is already exist!"));
+        next(new Error("This Email is already exist!"));
     }
    
 }
