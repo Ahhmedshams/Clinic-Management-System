@@ -150,10 +150,10 @@ exports.updatePatient =(request,response,next)=>{
 // }
 
 exports.deletePatient = async  (request, response, next) => {
-    const patientObject = await patient.findById(req.params.id);
+    const patientObject = await patient.findById(request.params.id);
     if (!patientObject) {
         return next(
-          new ErrorResponse(`patient not found with id of ${req.params.id}`, 404)
+          new ErrorResponse(`patient not found with id of ${request.params.id}`, 404)
         );
       }
       patientObject.remove();
