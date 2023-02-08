@@ -187,6 +187,7 @@ exports.updateAppointment = async (request,response,next)=>{
             })
         let calenderObject = await query;
         if(calenderObject){
+                        //لو الوقت متاح عند الدكتور 
             //update appointment 
             appointment.find({
                     _id:request.params.id
@@ -222,7 +223,9 @@ exports.deleteAppointment = async (request,response,next)=>{
     const id = parseInt(request.params.id);
     appointment.findByIdAndDelete({_id:request.params.id})
     .then(appointment=>{
+        console.log(appointment)
 
+        console.log(appointment.patientId)
         patient.findByIdAndUpdate(
             { _id: appointment.patientId},
             { $pull: { appointment: {$in:[appointment._id]} } }
@@ -253,7 +256,7 @@ exports.deleteAppointment = async (request,response,next)=>{
 // @route    GET /appointment//allreport
 // @access   ----
 exports.getAllreport = (request, response , next)=>{
-    console.log(1)
+    console.log(2)
     appointment.find()
     .populate({path: "doctorId", select : {_id:0 }})
     .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})
@@ -273,10 +276,7 @@ exports.getAllreport = (request, response , next)=>{
 // @route    GET /getDailyreport//allreport
 // @access   ----
 exports.getDailyreport = (request, response , next)=>{
-    let today = new Date() 
-    today.toLocaleDateString()
-    const date = moment(today, "MM/DD/yyyy").format("yyyy-MM-DD");
-    appointment.find({date:date})
+    appointment.find()
     .populate({path: "doctorId", select : {_id:0 }})
     .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})
     .then(data=>{

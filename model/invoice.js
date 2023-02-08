@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const schema = new mongoose.Schema({
-    _id: Number,
     paymentType: {
         type: String, enum: {
             values: ['cash', 'credit card', ' Insurance Card'],
@@ -14,7 +13,7 @@ const schema = new mongoose.Schema({
         type: Date,
         min: '2023-01-01'
     },
-    doctor: { type: Number, ref: "doctors" },
+    doctor: { type: Number, ref: "doctor" },
     patient: { type: Number, ref: "patient" },
     // clinic ref
 }, { _id: false })

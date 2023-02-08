@@ -33,7 +33,7 @@ exports.patientPost = [
 exports.patientUpdate = [
     param("id").isInt().withMessage("id Should be integer"),
     body("name").optional()
-    .isString()
+        .isString()
         .withMessage("Name Shoud be string"),
     body("gender").optional().isIn(["female", "male"])
         .withMessage("Gender Shoud be One Of ('female','male')"),
@@ -86,7 +86,7 @@ exports.clinicUpdate =
         body("doctors").optional().isArray(),
         body("employees").optional().isArray()
     ]
- //-------------------------invoice-----------------------------//   
+//-------------------------invoice-----------------------------//   
 exports.invoicePost =
     [
         body("paymentType").isIn(['cash', 'credit card', ' Insurance Card'])
@@ -135,112 +135,119 @@ exports.userUpdate =
 
 //-------------------------calender-----------------------------//
 exports.calenderPost = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("date")
-    .isDate().withMessage("weekday Should be date"),
-    body("startAt")
-    .isString().withMessage("startAt Should be time"),
-    body("endAt")
-    .isString().withMessage("endAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("date")
+        .isDate().withMessage("weekday Should be date"),
+    param("startAt")
+        .isString().withMessage("startAt Should be time"),
+    param("endAt")
+        .isString().withMessage("endAt Should be time"),
 ]
 exports.calenderUpdate = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("date")
-    .optional()
-    .isDate().withMessage("weekday Should be date"),
-    body("startAt")
-    .optional()
-    .isString().withMessage("startAt Should be time"),
-    body("endAt")
-    .optional()
-    .isString().withMessage("endAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("date")
+        .optional()
+        .isDate().withMessage("weekday Should be date"),
+    param("startAt")
+        .optional()
+        .isString().withMessage("startAt Should be time"),
+    param("endAt")
+        .optional()
+        .isString().withMessage("endAt Should be time"),
 ]
 //-------------------------appointment-----------------------------//
 exports.appointmentPost = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("doctorName")
-    .isString().withMessage("doctorName Should be String"),
-    body("startAt")
-    .isString().withMessage("startAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("doctorName")
+        .isString().withMessage("doctorName Should be String"),
+    param("startAt")
+        .isString().withMessage("startAt Should be time"),
 ]
 exports.appointmentUpdate = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("doctorName")
-    .optional()
-    .isString().withMessage("doctorName Should be String"),
-    body("startAt")
-    .optional()
-    .isString().withMessage("startAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("doctorName")
+        .optional()
+        .isString().withMessage("doctorName Should be String"),
+    param("startAt")
+        .optional()
+        .isString().withMessage("startAt Should be time"),
 ]
 
 //-------------------------employee-----------------------------//
 
-exports.employeePost=[
+exports.employeePost = [
     body("fullName").isString().withMessage("Name should be string")
-    .isLength({ max: 20 }).withMessage("Length of name must be less than 20"),
+        .isLength({ max: 20 }).withMessage("Length of name must be less than 20"),
 
-    body("birth_date").isString().withMessage("Please Enter Valid Date"),
-
+    body("hireDate").isDate(),
+    body("birth_date").optional().isDate().withMessage("Please Enter Valid Date"),
     body("email").isEmail().withMessage("Email Is Not Valid"),
-    body("userName").isString().withMessage("userName should be string"),
-
-    body("role").isString().withMessage("role should be string")
-    .isLength({ max: 10 }).withMessage("Length of name must be less than 10"),
 
     body("salary").isNumeric().withMessage("Salary should be number"),
-    
-    body("phone").optional()
-    .isMobilePhone('ar-EG')
-    .withMessage("phone Should Be a Valid Phone Number")
-    .isLength({ min: 10, max: 14, })
-    .withMessage("phone length should be between 10 and 14 numbers"),
 
-    body("gender").isIn(["Male","Female"]).withMessage("gender should be Male or Female"),
-    
-    body("password").isString().withMessage("password should be string"),
-
-    body("address").isObject().withMessage("address should be Object"),
-    body("address.city").isString().withMessage("city must be string"),
-    body("address.street").isInt().withMessage("street should be integer"),
-    body("address.building").isInt().withMessage("building should be integer")
-]
-
-exports.employeeUpdate=[
-    body("fullName").isString().optional().withMessage("Name should be string")
-    .isLength({ max: 20 }).withMessage("Length of name must be less than 20"),
-
-    body("birth_date").optional().isString().withMessage("Please Enter Valid Date"),
-
-    body("email").isEmail().optional().withMessage("Email Is Not Valid"),
-    body("userName").isString().optional().withMessage("userName should be string"),
-
-    body("role").isString().optional().withMessage("role should be string")
-    .isLength({ max: 10 }).withMessage("Length of name must be less than 10"),
-
-    body("salary").isNumeric().optional().withMessage("Salary should be number"),
-    
     body("phone").optional()
         .isMobilePhone('ar-EG')
         .withMessage("phone Should Be a Valid Phone Number")
         .isLength({ min: 10, max: 14, })
         .withMessage("phone length should be between 10 and 14 numbers"),
 
-    body("gender").isIn(["Male","Female"]).optional().withMessage("gender should be Male or Female"),
-    
-    body("password").isString().optional().withMessage("password should be string"),
+    body("gender").isIn(["Male", "Female"]).withMessage("gender should be Male or Female"),
 
+    body("password").isString().withMessage("password should be string"),
+    
+    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
+    body("address").isObject().withMessage("address should be Object"),
+    body("address.city")
+        .isString()
+        .withMessage("City name must be string"),
+    body("address.street")
+        .isString()
+        .optional()
+        .withMessage("Street name must be string"),
+    body("address.building")
+        .optional()
+        .isNumeric()
+]
+
+exports.employeeUpdate = [
+    body("fullName").isString().optional().withMessage("Name should be string")
+        .isLength({ max: 20 }).withMessage("Length of name must be less than 20"),
+
+    body("birth_date").optional().isString().withMessage("Please Enter Valid Date"),
+
+    body("email").isEmail().optional().withMessage("Email Is Not Valid"),
+
+    body("salary").isNumeric().optional().withMessage("Salary should be number"),
+
+    body("phone").optional()
+        .isMobilePhone('ar-EG')
+        .withMessage("phone Should Be a Valid Phone Number")
+        .isLength({ min: 10, max: 14, })
+        .withMessage("phone length should be between 10 and 14 numbers"),
+
+    body("gender").isIn(["Male", "Female"]).optional().withMessage("gender should be Male or Female"),
+
+    body("password").isString().optional().withMessage("password should be string"),
+    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
     body("address").isObject().optional().withMessage("address should be Object"),
-    body("address.city").optional().isString().withMessage("city must be string"),
-    body("address.street").isInt().optional().withMessage("street should be integer"),
-    body("address.building").isInt().optional().withMessage("building should be integer")
+    body("address.city")
+        .isString()
+        .withMessage("City name must be string"),
+    body("address.street")
+        .isString()
+        .optional()
+        .withMessage("Street name must be string"),
+    body("address.building")
+        .optional()
+        .isNumeric(),
 ]
 //-------------------------doctors-----------------------------//
 exports.doctorPost = [
@@ -285,6 +292,9 @@ exports.doctorPost = [
     body("yearsOfExperience")
         .isNumeric()
         .withMessage("Year of Experience should be number"),
+    body("calender").isArray().withMessage("(Calender of the doctor must be array"),
+    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
+    body("appointmentId").isArray().withMessage("Appointments should be array"),
     body("price").isNumeric().withMessage("Price must be integer")
 ];
 
@@ -332,6 +342,9 @@ exports.updateDoctor = [
         .withMessage(
             "Only Valid Specialties are : cardiology,dentistry,ear,nose,throat,nutrition,dermatology"
         ),
+    body("calender").optional().isArray().withMessage("(Calender of the doctor must be array"),
+    body("clinicId").optional().isNumeric().withMessage("Clinic id should be number"),
+    body("appointmentId").optional().isArray().withMessage("Appointments should be array"),
     body("price").optional().isNumeric().withMessage("Price must be integer")
 ];
 

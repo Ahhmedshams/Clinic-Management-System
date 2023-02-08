@@ -4,9 +4,7 @@ const mongoose = require('mongoose');
 const ErrorResponse = require('./../utils/errorResponse')
 
 require('./../model/patient');
-require('./../model/user');
 const patient= mongoose.model('patient');
-const user= mongoose.model('users');
 
 //Re-route
 exports.newAppointment = (request,response,next)=>{
@@ -20,7 +18,7 @@ exports.newAppointment = (request,response,next)=>{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.patientId}`,404))
         }
     }).catch(error=>{
-        next(new ErrorResponse(error))
+        next(new Error(error))
     })
     
 }
@@ -37,9 +35,6 @@ exports.getPatients =  (request,response,next)=>{
 // @access   Public
 exports.getPatient =(request,response,next)=>{
     patient.findOne({_id:request.params.id})
-    .populate({path: "appointment", select : {_id:0 }})
-    .populate({path: "prescriptions", select : {_id:0 }})
-    .populate({path: "invoices", select : {_id:0 }})
     .then(data=>{
         if(data!=null){
             response.status(200).json(data);
@@ -47,7 +42,7 @@ exports.getPatient =(request,response,next)=>{
             next(new ErrorResponse(`Patient doesn't exist with id of ${request.params.id}`,404))
         }
     })
-    .catch(error=>next(new ErrorResponse(error)))
+    .catch(error=>next(new Error))
 }
 
 // @desc     Create Patient
@@ -55,7 +50,6 @@ exports.getPatient =(request,response,next)=>{
 // @access   ----
 exports.createPatient = async (request,response,next)=>{
     let patientExist = await patient.count({ email: request.body.email });
-    console.log(patientExist)
     if (!patientExist) {
         let newPatient = new patient({
             name: request.body.name,
@@ -68,7 +62,7 @@ exports.createPatient = async (request,response,next)=>{
         })
         newPatient.save()
             .then(result => {
-                let newUser = new user({
+                let newUser = new User({
                     password: request.body.password,
                     email: request.body.email,
                     role: "patient",
@@ -78,7 +72,8 @@ exports.createPatient = async (request,response,next)=>{
                 response.status(201).json(result)
             })
             .catch(error => {
-                next( new ErrorResponse(error) );
+                console.log(error);
+                next(error);
             })
     } else {
         next(new Error("This patient is already exist!"));
@@ -95,7 +90,7 @@ exports.updatePatient =(request,response,next)=>{
         next(new ErrorResponse("Empty data", 400))
     }
 
-    user.updateOne({
+    User.updateOne({
         patientRef_id: request.params.id
     }, {
         $set: {
@@ -137,16 +132,16 @@ exports.updatePatient =(request,response,next)=>{
 // @route    DELETE /patient/:id
 // @access   ----
 exports.deletePatient = (request, response, next) => {
-    user.deleteOne({ patientRef_id: request.params.id }).then((res) => {
+    User.deleteOne({ patientRef_id: request.params.id }).then((res) => {
         patient.deleteOne({ _id: request.params.id })
             .then(data => {
                 if (data.deletedCount == 0) {
                     next(new ErrorResponse("Not found any id match with (" + request.params.id + ") ", 404))
                 } else {
-                    user.findOneAndDelete({ patientRef_id: request.params.id })
+                    User.findOneAndDelete({ patientRef_id: request.params.id })
                     response.status(200).json({ success: true, messege: "Delete done successfully" })
 
                 }
-            }).catch(error => next(new ErrorResponse(error)))
+            }).catch(error => next(new ErrorResponse()))
     })
 }

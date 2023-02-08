@@ -1,13 +1,19 @@
 const mongoose=require("mongoose")
-// const bcrypt = require("bcrypt");
+ const bcrypt = require("bcrypt");
 const schemas = require('./schemas');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
 const employeeSchema =new mongoose.Schema({
-    _id:{type:Number},
-    fullName:{type:String,required:true,maxLength:20},
-    hireDate:{type:Date,default:Date.now},
+    fullName:{
+        type:String,
+        required:true,
+        maxlength:[50,'Name can not be more than 50 characters']
+    },
+    hireDate:{
+        type:Date,
+        default:new Date().toLocaleDateString("en-US")
+    },
     birth_date:{type:Date},
     email:{
         type:String,
@@ -15,22 +21,25 @@ const employeeSchema =new mongoose.Schema({
         unique:true,
         match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,'Please add A valid email']
     },
-    userName:{type:String,required:true,maxLength:30,unique:true},
-    role:{type:String,required:true,maxLength:10},///roles decided
     salary:{type:Number},
-    phone:{type:String,
+    phone:{
+        type:String,
         match:[/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,"It is not a valid phone or line number"],
         trim: true,
-        required:true
-    },
+        required:[true,"Phone Number is required"]
+        },
     gender:{
         type:String,
         required:true,
         enum :["Male","Female"]
     },
     password:{type:String,required:true},
+    clinicId: {
+        type: Number,
+        ref: "clinic",
+      },
     address:schemas.addressSchema
-})
+},{_id:false})
 
 
 
