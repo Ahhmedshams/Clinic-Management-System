@@ -4,6 +4,7 @@ const controller = require("./../controller/patient");
 const validator = require("./../middlewares/errorValidation");
 const validation = require("./../middlewares/validations");
 const advancedResults = require ("./../middlewares/advancedResult");
+const allowedUsers =require("./../middlewares/AuthorizeRole")
 require('./../model/patient');
 const patient= mongoose.model('patient');
 
@@ -19,8 +20,8 @@ router.use('/patient/:patientId/appointment',controller.newAppointment,appointme
 
 
 router.route("/patient")
-.get(advancedResults(patient),controller.getPatients)
-.post(validation.patientPost,validator,controller.createPatient)
+.get(allowedUsers("admin"),advancedResults(patient),controller.getPatients)
+.post(allowedUsers("admin","patient"),validation.patientPost,validator,controller.createPatient)
 
 
 router.route("/patient/:id")

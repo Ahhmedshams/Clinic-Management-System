@@ -13,52 +13,7 @@ const patientSchema = mongoose.model("patient");
 const doctorSchema = mongoose.model("doctors");
 
 exports.payment = async function (request, response, next) {
-
-  // const invoice = InvoiceSchema.findOne({ _id: req.params.invoiceId }, {});
-  // const invoceDetails = await invoice.exec();
-  // const money = await invoceDetails.money;
-  // const paymentMethod = await invoceDetails.paymentMethod;
-  // const medicine = await invoceDetails.medicine;
-  //description
-
-  // if (paymentMethod === "Credit Card") {
-  //     try {
-  //       const session = await stripe.checkout.sessions.create({
-  //         client_reference_id: `${req.params.invoiceId}`,
-  //         payment_method_types: ["card"],
-  //         line_items: [
-  //           {
-  //             price_data: {
-  //               currency: "EGP",
-  //               unit_amount: money * 100,
-
-  //               product_data: {
-  //                 name: `Invoce No: ${req.params.invoiceId}`,
-  //                 description: `${paymentDescription}`, //description
-  //               },
-  //             },
-  //             quantity: 1,
-  //           },
-  //         ],
-  //         // success_url: `${req.protocol}://${req.get("host")}/invoice/?id=${req.params.invoiceId}`,
-  //         // cancel_url: `${req.protocol}://${req.get("host")}/invoice/`,
-  //       });
-
-  //       // 3) Create session as response
-  //       res.status(200).json({
-  //         status: "success",
-  //         session,
-  //       });
-  //     } catch (error) {
-  //       next(error);
-  //     }
-  //   } else {
-  //     res.status(400).json({ status: "Fail", message: "That's not Credit Card Payment" });
-  //   }
-  // };
-
-
-
+  
   const token = await stripe.tokens.create({
     card: {
       number: '4242424242424242',
