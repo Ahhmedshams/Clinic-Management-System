@@ -1,13 +1,19 @@
 let jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const ErrorResponse = require('./../utils/errorResponse');
 require("./../model/employee");
-require("./../model/user");
-const userSchema = mongoose.model("users");
+const EmployeeSchema = mongoose.model("employee");
 
 
 
 exports.login = (req, res, next) => {
-  if (req.body.email == "Al-Agezy@gmail.com" && req.body.password == "ahmed123") {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(new ErrorResponse('Please Provide an email and password', 400));
+  }
+
+  if (email == "Al-Agezy@gmail.com" && password == "ahmed123") {
     let token = jwt.sign({
       role: "admin"
     }, process.env.SECRET_KEY);
@@ -15,29 +21,20 @@ exports.login = (req, res, next) => {
 
   } else {
 
-    userSchema.findOne({
+    EmployeeSchema.findOne({
       email: req.body.email,
       password: req.body.password,
-    }).then((user) => {
-      if (user != null) {
-        let userId;
-        if (user.role == "patient") {
-          userId = user.patientRef_id
-        }
-        else if (user.role == "employee") {
-          userId = user.employeeRef_id
-        } else userId = user.doctorsRef_id ;
-
+    }).then((employee) => {
+      if (employee != null) {
         let token = jwt.sign(
           {
-            id: userId,
-            role: user.role
+            id: employee._id,
+            role: "employee"
           },
           process.env.SECRET_KEY, {
           expiresIn: "30d",
         });
-        res.status(200).json({ data: `Authorized ${user.role}`, token });
-
+        res.status(200).json({ data: "Authorized Employee", token });
       } else {
         let error = new Error("Not Authinticated")
         error.status = 401;
