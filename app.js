@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const errorHandler = require("./middlewares/error")
+
 //Load env 
 require('dotenv').config();
 
@@ -17,6 +18,8 @@ const doctorRouter = require("./routes/doctor");
 const calender = require("./routes/doctorsCalender")
 const invoiceRouter = require("./routes/invoice");
 const paymentRouter=require("./routes/payment");
+const loginRouter =require("./routes/login");
+const authinticationMw = require("./middlewares/authinticationMw")
 
 //Server
 const server = express();
@@ -40,6 +43,13 @@ server.use(morgan('tiny'))
 
 // Body Parser (Convert body data to Json format)
 server.use(express.json())
+
+//Login
+server.use(loginRouter);
+
+//Authentication MW
+server.use(authinticationMw.login)
+
 
 //Routes
 server.use(userRouter)
