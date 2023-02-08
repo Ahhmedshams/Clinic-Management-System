@@ -34,7 +34,7 @@ const schema = new mongoose.Schema({
         required:[true,"Phone Number is required"]
         },
     address:schemas.addressSchema,
-    appointment:{type:Array , ref :'appintment'},
+    appointment:{type:Array , ref :'appointment'},
     prescriptions:{type:Array , ref :'prescription'},
     invoices:{type:Array , ref :'invoice'}
 },{_id:false});

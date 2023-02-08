@@ -135,48 +135,48 @@ exports.userUpdate =
 
 //-------------------------calender-----------------------------//
 exports.calenderPost = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("date")
+    body("date")
     .isDate().withMessage("weekday Should be date"),
-    param("startAt")
+    body("startAt")
     .isString().withMessage("startAt Should be time"),
-    param("endAt")
+    body("endAt")
     .isString().withMessage("endAt Should be time"),
 ]
 exports.calenderUpdate = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("date")
+    body("date")
     .optional()
     .isDate().withMessage("weekday Should be date"),
-    param("startAt")
+    body("startAt")
     .optional()
     .isString().withMessage("startAt Should be time"),
-    param("endAt")
+    body("endAt")
     .optional()
     .isString().withMessage("endAt Should be time"),
 ]
 //-------------------------appointment-----------------------------//
 exports.appointmentPost = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("doctorName")
+    body("doctorName")
     .isString().withMessage("doctorName Should be String"),
-    param("startAt")
+    body("startAt")
     .isString().withMessage("startAt Should be time"),
 ]
 exports.appointmentUpdate = [
-    param("weekday")
+    body("weekday")
     .optional()
     .isString().withMessage("weekday Should be string"),
-    param("doctorName")
+    body("doctorName")
     .optional()
     .isString().withMessage("doctorName Should be String"),
-    param("startAt")
+    body("startAt")
     .optional()
     .isString().withMessage("startAt Should be time"),
 ]
@@ -285,9 +285,6 @@ exports.doctorPost = [
     body("yearsOfExperience")
         .isNumeric()
         .withMessage("Year of Experience should be number"),
-    body("calender").isArray().withMessage("(Calender of the doctor must be array"),
-    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
-    body("appointmentId").isArray().withMessage("Appointments should be array"),
     body("price").isNumeric().withMessage("Price must be integer")
 ];
 
@@ -335,9 +332,6 @@ exports.updateDoctor = [
         .withMessage(
             "Only Valid Specialties are : cardiology,dentistry,ear,nose,throat,nutrition,dermatology"
         ),
-    body("calender").optional().isArray().withMessage("(Calender of the doctor must be array"),
-    body("clinicId").optional().isNumeric().withMessage("Clinic id should be number"),
-    body("appointmentId").optional().isArray().withMessage("Appointments should be array"),
     body("price").optional().isNumeric().withMessage("Price must be integer")
 ];
 
