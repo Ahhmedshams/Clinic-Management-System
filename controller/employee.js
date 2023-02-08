@@ -10,7 +10,7 @@ const employeeSchema = mongoose.model("employee")
 
 //Get All Employees
 exports.getAllEmployees = (request, response, next) => {
-    response.status(200).json(response.advancedResults)   
+    response.status(200).json(response.advancedResults)
 }
 
 
@@ -19,9 +19,8 @@ exports.getAllEmployees = (request, response, next) => {
 //Get Employee By Id
 exports.getEmployeeById=(request,response,next)=>{
     employeeSchema.findOne(
-        {
-            _id:request.params.id
-        }).then(data=>{
+        { _id:request.params.id }).populate({ path:"clinicId" , select: { _id:0 , name:1 } })
+        .then(data=>{
             if(data)
             response.status(200).json(data)
             else
@@ -39,12 +38,11 @@ exports.addEmployee = (request, response, next) => {
         hireDate: new Date().toLocaleDateString(),
         birth_date: request.body.birth_date,
         email: request.body.email,
-        userName: request.body.userName,
-        role: request.body.role,
         salary: request.body.salary,
         phone: request.body.phone,
         gender: request.body.gender,
         password: request.body.password,
+        clinicId:request.body.clinicId,
         address: request.body.address
     });
     newEmp.save()
@@ -66,12 +64,11 @@ exports.updateEmployee = (request, response, next) => {
                 hireDate: request.body.hireDate,
                 birth_date: request.body.birth_date,
                 email: request.body.email,
-                userName: request.body.userName,
-                role: request.body.role,
                 salary: request.body.salary,
                 phone: request.body.phone,
                 gender: request.body.gender,
                 password: request.body.password,
+                clinicId:request.body.clinicId,
                 address: request.body.address
             }
         }).then(result => {
@@ -92,12 +89,11 @@ exports.updateEmployeeById = (request, response, next) => {
                 hireDate: request.body.hireDate,
                 birth_date: request.body.birth_date,
                 email: request.body.email,
-                userName: request.body.userName,
-                role: request.body.role,
                 salary: request.body.salary,
                 phone: request.body.phone,
                 gender: request.body.gender,
                 password: request.body.password,
+                clinicId:request.body.clinicId,
                 address: request.body.address
             }
         }).then(result => {

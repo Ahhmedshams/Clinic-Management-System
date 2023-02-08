@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 const schema = new mongoose.Schema({
-    _id: Number,
     doctorId: { type: Number, required: true, ref:"doctors"},
     date: { type: String, required: true },
     time:{type:String},
