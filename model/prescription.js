@@ -11,6 +11,3 @@ schema.plugin(autoIncrement, { id: 'prescription_id_counter', inc_field: '_id' }
 mongoose.model("prescription",schema) ;///set 
 
 
-// .populate({
-//   path: 'doctorName', select: { firstName: 1, lastName: 1, phone: 1, _id: 0 }
-// })

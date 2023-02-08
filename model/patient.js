@@ -39,22 +39,11 @@ const schema = new mongoose.Schema({
 },{_id:false});
 
 
-schema.pre('save',async function (next){
-    try{
-        const salt = await bcrypt.genSalt(12);
-        const hasdedPassword = await bcrypt.hash(this.password,salt);
-        this.password=hasdedPassword;
-        next()
-    }
-    catch(error){
-        next(error);
-    }
-})
 
 schema.plugin(autoIncrement, {id: 'patient_id_counter', inc_field: '_id' });
 
 
-// Cascade delete Ref when a patient is deleted
+// Cascade delete appointment when a patient is deleted
 schema.pre('remove', async function(next) {
     console.log(`appointment being removed from patient ${this._id}`);
     await this.model('appointment').deleteMany({ patientId: this._id });
