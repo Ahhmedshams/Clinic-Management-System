@@ -15,18 +15,19 @@ const employeeSchema =new mongoose.Schema({
         match:[/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,'Please add A valid email']
     },
     salary:{type:Number},
-    phone:{type:String,
+    phone:{
+        type:String,
         match:[/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g,"It is not a valid phone or line number"],
         trim: true,
-        required:true
-    },
+        required:[true,"Phone Number is required"]
+        },
     gender:{
         type:String,
         required:true,
         enum :["male","female"]
     },
     address:schemas.addressSchema
-})
+},{_id:false})
 
 
 employeeSchema.plugin(AutoIncrement, {id: 'employee_id_counter', inc_field:'_id'});

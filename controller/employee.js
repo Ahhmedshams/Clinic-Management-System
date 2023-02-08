@@ -14,7 +14,7 @@ const user = mongoose.model("users");
 
 //Get All Employees
 exports.getAllEmployees = (request, response, next) => {
-    response.status(200).json(response.advancedResults)   
+    response.status(200).json(response.advancedResults)
 }
 
 
@@ -23,9 +23,8 @@ exports.getAllEmployees = (request, response, next) => {
 //Get Employee By Id
 exports.getEmployeeById=(request,response,next)=>{
     employeeSchema.findOne(
-        {
-            _id:request.params.id
-        }).then(data=>{
+        { _id:request.params.id }).populate({ path:"clinicId" , select: { _id:0 , name:1 } })
+        .then(data=>{
             if(data)
             response.status(200).json(data)
             else
@@ -102,6 +101,7 @@ exports.updateEmployee = (request, response, next) => {
                 } else {
                     response.status(201).json({ success: true, message: "Update patient" })
                 }
+                address: request.body.address
             }
         })
         .catch(error => next(error))

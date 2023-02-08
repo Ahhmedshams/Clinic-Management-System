@@ -58,7 +58,7 @@ const userInfoPost = [
 ]
 const userInfoUpdate = [
     body("name").optional()
-    .isString()
+        .isString()
         .withMessage("Name Shoud be string"),
     body("gender").optional().isIn(["female", "male"])
         .withMessage("Gender Shoud be One Of ('female','male')"),
@@ -106,7 +106,7 @@ exports.clinicUpdate =
         body("doctors").optional().isArray(),
         body("employees").optional().isArray()
     ]
- //-------------------------invoice-----------------------------//   
+//-------------------------invoice-----------------------------//   
 exports.invoicePost =
     [
         body("paymentType").isIn(['cash', 'credit card', ' Insurance Card'])
@@ -129,50 +129,50 @@ exports.invoiceUpdate =
 
 //-------------------------calender-----------------------------//
 exports.calenderPost = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("date")
-    .isDate().withMessage("weekday Should be date"),
-    body("startAt")
-    .isString().withMessage("startAt Should be time"),
-    body("endAt")
-    .isString().withMessage("endAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("date")
+        .isDate().withMessage("weekday Should be date"),
+    param("startAt")
+        .isString().withMessage("startAt Should be time"),
+    param("endAt")
+        .isString().withMessage("endAt Should be time"),
 ]
 exports.calenderUpdate = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("date")
-    .optional()
-    .isDate().withMessage("weekday Should be date"),
-    body("startAt")
-    .optional()
-    .isString().withMessage("startAt Should be time"),
-    body("endAt")
-    .optional()
-    .isString().withMessage("endAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("date")
+        .optional()
+        .isDate().withMessage("weekday Should be date"),
+    param("startAt")
+        .optional()
+        .isString().withMessage("startAt Should be time"),
+    param("endAt")
+        .optional()
+        .isString().withMessage("endAt Should be time"),
 ]
 //-------------------------appointment-----------------------------//
 exports.appointmentPost = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("doctorName")
-    .isString().withMessage("doctorName Should be String"),
-    body("startAt")
-    .isString().withMessage("startAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("doctorName")
+        .isString().withMessage("doctorName Should be String"),
+    param("startAt")
+        .isString().withMessage("startAt Should be time"),
 ]
 exports.appointmentUpdate = [
-    body("weekday")
-    .optional()
-    .isString().withMessage("weekday Should be string"),
-    body("doctorName")
-    .optional()
-    .isString().withMessage("doctorName Should be String"),
-    body("startAt")
-    .optional()
-    .isString().withMessage("startAt Should be time"),
+    param("weekday")
+        .optional()
+        .isString().withMessage("weekday Should be string"),
+    param("doctorName")
+        .optional()
+        .isString().withMessage("doctorName Should be String"),
+    param("startAt")
+        .optional()
+        .isString().withMessage("startAt Should be time"),
 ]
 
 //-------------------------employee-----------------------------//
@@ -216,6 +216,9 @@ exports.doctorPost = [
     body("yearsOfExperience")
         .isNumeric()
         .withMessage("Year of Experience should be number"),
+    body("calender").isArray().withMessage("(Calender of the doctor must be array"),
+    body("clinicId").isNumeric().withMessage("Clinic id should be number"),
+    body("appointmentId").isArray().withMessage("Appointments should be array"),
     body("price").isNumeric().withMessage("Price must be integer")
 ];
 
@@ -240,6 +243,9 @@ exports.updateDoctor = [
         .withMessage(
             "Only Valid Specialties are : cardiology,dentistry,ear,nose,throat,nutrition,dermatology"
         ),
+    body("calender").optional().isArray().withMessage("(Calender of the doctor must be array"),
+    body("clinicId").optional().isNumeric().withMessage("Clinic id should be number"),
+    body("appointmentId").optional().isArray().withMessage("Appointments should be array"),
     body("price").optional().isNumeric().withMessage("Price must be integer")
 ];
 

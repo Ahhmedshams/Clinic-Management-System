@@ -25,7 +25,7 @@ router.route("/:id")
 router
 .get("//allreports",controller.getAllreport)
 router.route("//dailyreports")
-.get(controller.getDailyreport)
-//doctor appointment
+.get(controller.getAllreport)
+
 
 module.exports=router;
