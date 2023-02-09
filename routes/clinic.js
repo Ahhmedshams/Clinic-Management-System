@@ -18,7 +18,7 @@ router.route("/clinic")
 
 router.route("/clinic/:id")
     .get(allowedUsers.checkWithRole("admin"), validator, controller.getClinicByID)
-    .delete(allowedUsers.checkWithRole("admin"), expressValidation.paramIdInt, validator, controller.getClinicByID)
+    .delete(allowedUsers.checkWithRole("admin"), expressValidation.paramIdInt, validator, controller.deleteClinicByID)
     .patch(allowedUsers.checkWithRole("admin"), expressValidation.patientUpdate, validator, controller.updateClinic)
 
 router.route("/clinic/:id/doctor")
