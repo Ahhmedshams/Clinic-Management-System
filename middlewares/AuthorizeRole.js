@@ -3,7 +3,6 @@
 
   module.exports.checkWithRole= (...allowed) => {
   return (request, response, next) => {
-    console.log(request.id);
     let userRole = request.role;
     let getAllowedRoles = [...allowed];
 
@@ -24,19 +23,3 @@ module.exports.checkWithId = (request, response, next) => {
     next(error)
   }
 }
-
-
-
-// module.exports.checkWithRoleAndID = (cRole) => {
-
-//   return (request, response, next) => {
-
-//     if (request.role == cRole && request.id == request.params.id)
-//       next()
-//     else {
-//       let error = new Error("Not Authorized");
-//       error.status = 403;
-//       next(error)
-//     }
-//   }
-// }

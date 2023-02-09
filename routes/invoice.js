@@ -14,13 +14,13 @@ const invoice = mongoose.model('invoice');
 router.route("/invoice")
     .get(allowedUsers.checkWithRole("admin"), advancedResults(invoice), controller.getAllinvoice)
     .post(allowedUsers.checkWithRole("admin", "employee"), expressValidation.invoicePost, validator, controller.addInvoice)
-    .patch(allowedUsers.checkWithRole("admin", "employee"), expressValidation.invoiceUpdate, validator, controller.updateInvoice)
+   
 
 
-router.get("/invoice/:id",
-    allowedUsers.checkWithRole("admin"),
-    validator,
-    controller.getInvoiceByID)
+router.route("/invoice/:id")
+.get(allowedUsers.checkWithRole("admin"),validator,controller.getInvoiceByID)
+    
+.patch(allowedUsers.checkWithRole("admin", "employee"), expressValidation.invoiceUpdate, validator, controller.updateInvoice)
 
 router.delete("/invoice/:id",
     allowedUsers.checkWithRole("admin"),
