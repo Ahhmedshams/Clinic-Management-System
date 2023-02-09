@@ -17,7 +17,7 @@ router.route("/clinic")
 
 router.route("/clinic/:id")
     .get(expressValidation.paramIdInt, validator, controller.getClinicByID)
-    .delete(expressValidation.paramIdInt, validator, controller.getClinicByID)
+    .delete(expressValidation.paramIdInt, validator, controller.deleteClinicByID)
     .patch(expressValidation.patientUpdate, validator, controller.updateClinic)
 
 router.route("/clinic/:id/doctor")
