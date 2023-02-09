@@ -48,6 +48,17 @@ Schema.pre('save', async function (next) {
     }
 })
 
+// Cascade delete appointment when a patient is deleted
+Schema.pre('remove', async function(next) {
+    if(this.patientRef_id!=0){
+        await this.model('patient').deleteMany({ _id: this.patientRef_id });
+    }else if(this.employeeRef_id!=0){
+        await this.model('employee').deleteMany({ _id: this.employeeRef_id });
+    }else if(this.doctorsRef_id!=0){
+        await this.model('doctors').deleteMany({ _id: this.doctorsRef_id });
+    }
+    next();
+  });
 
 Schema.plugin(AutoIncrement, { id: '_id_counter', inc_field: '_id' });
 

@@ -3,7 +3,8 @@ const { default: mongoose } = require("mongoose");
 require("./../model/invoice");
 
 const InvoiceSchema = mongoose.model("invoice");
-
+const pdfKit = require("pdfkit");
+let fs = require("fs");
 exports.getAllinvoice = (request, response, next) => {
 
     response.status(200).json(response.advancedResults)
@@ -52,6 +53,7 @@ exports.updateInvoice = (request, response, next) => {
 }
 exports.getInvoiceByID = (request, response, next) => {
     InvoiceSchema.findById(request.params.id)
+    //   .populate({ path: "patient", select: { name: 1, gender: 1, phone: 1, _id: 0 } })
         .then((data) => {
             createPdf(data)
             response.status(200).json(data)
@@ -100,19 +102,17 @@ let patientInfo = {
 let orderInfo = {
     "orderNo": data._id,
     "paymentType": data.paymentType,
-    "invoiceDate": "11/05/2021",
+    "invoiceDate": data.date,
     "invoiceTime": "10:57:00 PM",
     "products": [
     {
     "id": "15785",
     "name": data.patient,
-    "company": "Acer",
     "unitPrice": 150,
     "totalPrice": data.totalCost,
-    "qty": 1
+    // "qty": 1
     }
     ],
-    "totalValue": 45997
     }
     
     let pdfDoc = new pdfKit();
@@ -138,14 +138,14 @@ let orderInfo = {
     pdfDoc.text(patientInfo.city + " " + patientInfo.pincode, 400, 145, { width: 250 });
     pdfDoc.text(patientInfo.state + " " + patientInfo.country, 400, 160, { width: 250 });
     
-    pdfDoc.text("Order No:" + orderInfo.orderNo, 7, 195, { width: 250 });
-    pdfDoc.text("Invoice No:" + orderInfo.paymentType, 7, 210, { width: 250 });
-    pdfDoc.text("Date:" + orderInfo.invoiceDate + " " + orderInfo.invoiceTime, 7, 225, { width: 250 });
+    pdfDoc.text("Order No: " + orderInfo.orderNo, 7, 195, { width: 250 });
+    pdfDoc.text("Payment Type: " + orderInfo.paymentType, 7, 210, { width: 250 });
+    pdfDoc.text("Date: " + orderInfo.invoiceDate + " " + orderInfo.invoiceTime, 7, 225, { width: 250 });
     
     pdfDoc.rect(7, 250, 560, 20).fill("#4B1325").stroke("#4B1325");
     pdfDoc.fillColor("#fff").text("ID", 20, 256, { width: 90 });
-    // pdfDoc.text("Product", 110, 256, { width: 190 });
-    // pdfDoc.text("Qty", 300, 256, { width: 100 });
+    pdfDoc.text("Patient ID", 110, 256, { width: 190 });
+    pdfDoc.text("Doctor ID", 300, 256, { width: 100 });
     pdfDoc.text("Price", 400, 256, { width: 100 });
     pdfDoc.text("Total Price", 500, 256, { width: 100 });
     
@@ -164,8 +164,8 @@ let orderInfo = {
     pdfDoc.rect(7, 256 + (productNo * 20), 560, 0.2).fillColor("#000").stroke("#000");
     productNo++;
     
-    pdfDoc.font(fontBold).text("Total:", 400, 256 + (productNo * 17));
-    pdfDoc.font(fontBold).text(orderInfo.totalValue, 500, 256 + (productNo * 17));
+    // pdfDoc.font(fontBold).text("Total:", 400, 256 + (productNo * 17));
+    // pdfDoc.font(fontBold).text(orderInfo.totalValue, 500, 256 + (productNo * 17));
     
     pdfDoc.end();
     console.log("pdf generate successfully");

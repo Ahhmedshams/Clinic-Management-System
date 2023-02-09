@@ -9,10 +9,10 @@ const { route } = require("./invoice");
 
 const router = express.Router();
 
-router.route("/report")
+router.route("/appointmentreport")
 .get(controller.getAllreport)
 
-router.route("/report/:date")
+router.route("/appointmentreport/:date")
 .get(controller.getDailyreport)
 
 
