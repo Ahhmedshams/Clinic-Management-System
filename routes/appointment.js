@@ -22,10 +22,4 @@ router.route("/:id")
 
 
 
-router
-.get("//allreports",controller.getAllreport)
-router.route("//dailyreports")
-.get(controller.getAllreport)
-
-
 module.exports=router;

@@ -31,7 +31,7 @@ exports.createCalender = async (request,response,next) => {
     const doctorId = parseInt(request.doctorId);
     const startAt = moment(request.body.startAt, "h:mm a");
     const endAt = moment(request.body.endAt, "h:mm a");
-    const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
+    const date = moment(request.body.date, "yyyy-MM-DD").format("yyyy-MM-DD");
     const totalWorking = moment.duration(endAt.diff(startAt));
     const totalWorkingMinutes = moment.duration(endAt.diff(startAt)).asMinutes();
     let totalWorkingHours = totalWorking.hours() + 'h,' + totalWorking.minutes() + 'm'
