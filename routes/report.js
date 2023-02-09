@@ -13,6 +13,10 @@ const router = express.Router();
 router.route("/appointmentreport")
 .get(allowedUsers.checkWithRole("admin"),controller.getAllreport)
 
+router.route("/appointmentreportjson")
+.get(allowedUsers.checkWithRole("admin"),controller.jsonReport)
+
+
 router.route("/appointmentreport/:date")
 .get(allowedUsers.checkWithRole("admin"),controller.getDailyreport)
 

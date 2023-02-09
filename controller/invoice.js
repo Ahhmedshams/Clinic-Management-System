@@ -53,7 +53,7 @@ exports.updateInvoice = (request, response, next) => {
 }
 exports.getInvoiceByID = (request, response, next) => {
     InvoiceSchema.findById(request.params.id)
-    //   .populate({ path: "patient", select: { name: 1, gender: 1, phone: 1, _id: 0 } })
+    //   .populate({ path: "patient", select: { name: 1, _id: 0 } })
         .then((data) => {
             createPdf(data)
             response.status(200).json(data)
@@ -106,8 +106,9 @@ let orderInfo = {
     "invoiceTime": "10:57:00 PM",
     "products": [
     {
-    "id": "15785",
+    "id": data._id,
     "name": data.patient,
+    "docotrName":data.doctor,
     "unitPrice": 150,
     "totalPrice": data.totalCost,
     // "qty": 1
@@ -155,7 +156,7 @@ let orderInfo = {
     let y = 256 + (productNo * 20);
     pdfDoc.fillColor("#000").text(element.id, 20, y, { width: 90 });
     pdfDoc.text(element.name, 110, y, { width: 190 });
-    pdfDoc.text(element.qty, 300, y, { width: 100 });
+    pdfDoc.text(element.docotrName, 300, y, { width: 100 });
     pdfDoc.text(element.unitPrice, 400, y, { width: 100 });
     pdfDoc.text(element.totalPrice, 500, y, { width: 100 });
     productNo++;

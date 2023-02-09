@@ -9,8 +9,9 @@ const controllerInvo = require("./../controller/invoice");
 require("./../model/appointment");
 const appointment=mongoose.model("appointment")
 
+let fs = require("fs");
+
 exports.getAllreport = (request, response , next)=>{
-    console.log(2)
     appointment.find()
     .populate({path: "doctorId", select : {_id:0 }})
     .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})
@@ -26,7 +27,7 @@ exports.getAllreport = (request, response , next)=>{
         next(new Error(error));
     })
 }
-//excel
+//report data -- excel
 exports.getAppointmentReport=(request,response,next)=>{
     appointment.find()
     .populate({path: "doctorId"})
@@ -35,13 +36,12 @@ exports.getAppointmentReport=(request,response,next)=>{
         const csvWriter=createCsvWriter({
             path: "report.csv",
             header: [
-                { id: 'doctorId', title: 'Doctor_ID' },
-                { id: 'patientId', title: 'Patient_ID' },
-                { id: 'date', title: 'Date' },
-                { id: 'time', title: 'Time' },
-                { id: 'isScaned', title: 'Scaned' },
-                { id: 'calenderId', title: 'calenderId' },
-                { id: 'duration', title: 'duration' }
+                { id: 'patientId', title: 'patient ID' },
+                { id: 'doctorId', title: 'Doctor id' },
+                { id: 'time', title: 'time' },
+                { id: 'date', title: 'date' },
+                // { id: 'address', title: 'address' },
+                // { id: 'speciality', title: 'speciality' },
             ]
         });
         console.log(data)
@@ -70,11 +70,13 @@ exports.getAppointmentReport=(request,response,next)=>{
 
 
 exports.getDailyreport = (request, response , next)=>{
+    console.log("hello")
     appointment.findOne({ date: request.params.date }, { __v: 0 })
+    
     .then(data=>{
         response.status(200).json({
             success:true,
-            count:data.length,
+            // count:data.length,
             data:data
         })
     })
@@ -83,3 +85,51 @@ exports.getDailyreport = (request, response , next)=>{
         next(new Error(error));
     })
 }
+
+// json report 
+const filePath = 'apppointmentReport.json';
+  exports.jsonReport=(request,response,next)=>{
+    appointment.find()
+                    .then((data)=>
+                    {
+                      const formattedReports = data.map(function(e) {
+                        return {
+                          appointmentId: e.id,
+                          doctorId:e.doctorId,
+                          date: e.date,
+                          time: e.time,
+                          patientId:e.patientId,
+                          calenderId:e.calenderId,
+                          isScaned:e.isScaned
+                        };
+                      });
+                      fs.writeFile(filePath, JSON.stringify(formattedReports), function(err) {
+                        if (err) return console.error(err);
+                        response.status(200).json({message:`Data saved to ${filePath}.`,data})
+                      });
+                    })
+                    .catch(err=>next(err))
+  }
+
+
+  exports.dailyJsonReport=(request,response,next)=>{
+    appointment.findOne({date:request.params.date},{__v:0})
+               .then((data)=>{
+                const formattedReports = data.map(function(e){
+                    return{
+                        appointmentId: e.id,
+                        doctorId:e.doctorId,
+                        date: e.date,
+                        time: e.time,
+                        patientId:e.patientId,
+                        calenderId:e.calenderId,
+                        isScaned:e.isScaned
+                    }
+                });
+                fs.writeFile(filePath, JSON.stringify(formattedReports), function(err) {
+                    if (err) return console.error(err);
+                    response.status(200).json({message:`Data saved to ${filePath}.`,data})
+                  });
+               })
+
+  }
