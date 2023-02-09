@@ -14,8 +14,8 @@ const { request } = require("express");
 const doctors = mongoose.model('doctors');
 const router = express.Router();
 
-router.use('/doctors/:doctorId/calender',allowedUsers.checkWithRole("admin","employee","doctor"),controller.reRoute, calenderRouter)
-router.use('/doctors/:doctorId/appointment', controller.reRoute, appointmentRouter)
+router.use('/doctors/:doctorId/calender',allowedUsers.checkWithRole("doctor"),controller.reRoute, calenderRouter)
+router.use('/doctors/:doctorId/appointment',allowedUsers.checkWithRole("doctor"), controller.reRoute, appointmentRouter)
 
 
 router.route("/doctors")
