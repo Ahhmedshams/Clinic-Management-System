@@ -111,6 +111,8 @@ exports.deleteDoctor = (request, response, next) => {
         next(new Error(error))
     })
 }
+
+
 exports.getMedicien = (request, response, next) => {
     ClinicSchema.findById(request.params.id).populate({ path: "medicines", select: { _id: 0 } })
         .then((data) => {
@@ -140,7 +142,7 @@ exports.pushMedicien = (request, response, next) => {
 exports.deleteMedicien = (request, response, next) => {
     ClinicSchema.findByIdAndUpdate(
         { _id: request.params.id },
-        { $pull: { medicines: request.body.medicine } }
+        { $pull: { medicines: request.body.medicines } }
     ).then(data => {
         response.status(201).json(data.medicines)
     }).catch(error => {
@@ -175,12 +177,10 @@ exports.pushEmployee = (request, response, next) => {
         })
 }
 
-
-
 exports.deleteEmployee = (request, response, next) => {
     ClinicSchema.findByIdAndUpdate(
         { _id: request.params.id },
-        { $pull: { employees: request.body.employee } }
+        { $pull: { employees: request.body.employees } }
     ).then(data => {
         response.status(201).json({
             message:"Employee Deleted Successfully"
