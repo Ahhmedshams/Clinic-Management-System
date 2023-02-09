@@ -14,7 +14,7 @@ const logger=new LoggerServices('employee');
 
 //Get All Employees
 exports.getAllEmployees = (request, response, next) => {
-    response.status(200).json(response.advancedResults)
+    response.status(200).json(response.advancedResults).populate({ path:"clinicId" , select: { _id:0 , name:1 } })
 }
 
 
@@ -61,7 +61,8 @@ exports.addEmployee = async(request, response, next) => {
         salary: request.body.salary,
         phone: request.body.phone,
         gender: request.body.gender,
-        address: request.body.address
+        address: request.body.address,
+        clinicId:request.body.clinicId
     });
     newEmp.save()
         .then(result => {
@@ -106,7 +107,8 @@ function specificEmployeeUpdate(request, response, next) {
                 salary: request.body.salary,
                 phone: request.body.phone,
                 gender: request.body.gender,
-                address: request.body.address
+                address: request.body.address,
+                clinicId:request.body.clinicId
             }
         }).then(data => {
             if (data.matchedCount == 0) {
@@ -133,7 +135,7 @@ exports.updateEmployee = (request, response, next) => {
     } else if (request.role == "admin") {
         specificEmployeeUpdate(request,response,next)
     } else {
-        let error = new Error("Not Authorized");
+        let error = new Error("Not Authorizedddd");
         error.status = 403;
         next(error)
     }
