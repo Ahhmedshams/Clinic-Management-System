@@ -4,7 +4,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 const schema = new mongoose.Schema({
     paymentType: {
         type: String, enum: {
-            values: ['cash', 'credit card', ' Insurance Card'],
+            values: ['Cash', 'Credit Card', ' Insurance Card'],
             message: 'This way of payment do not allowed'
         }
     },
@@ -15,6 +15,10 @@ const schema = new mongoose.Schema({
     },
     doctor: { type: Number, ref: "doctor" },
     patient: { type: Number, ref: "patient" },
+    status:{
+        type:String,
+        enum:["Success","Failed"]
+    }
     // clinic ref
 }, { _id: false })
 

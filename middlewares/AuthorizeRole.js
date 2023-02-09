@@ -1,6 +1,7 @@
  const { request, response } = require("express");
-// const verifyusers = (...allowed) => {
-  module.exports= (...allowed) => {
+
+
+  module.exports.checkWithRole= (...allowed) => {
   return (request, response, next) => {
     console.log(request.id);
     let userRole = request.role;
@@ -12,9 +13,10 @@
   };
 };
 
+
 module.exports.checkWithId=(request,response,next)=>{
   console.log(request);
-  if(request.id==request.params.id)
+  if(request.id == request.params.id)
   next()
     else
     {
