@@ -26,7 +26,7 @@ router.route("/clinic/:id/doctor")
     .delete(expressValidation.paramIdInt, validator, controller.deleteDoctor)
 
 router.route("/clinic/:id/medicien")
-    .get(expressValidation.paramIdInt, validator, controller.getAllclinics)
+    .get(expressValidation.paramIdInt, validator, controller.getMedicien)
     .post(expressValidation.paramIdInt, validator, controller.pushMedicien)
     .delete(expressValidation.paramIdInt, validator, controller.deleteMedicien)
 
