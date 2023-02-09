@@ -140,21 +140,26 @@ exports.deleteCalender =asyncHandler( async (request,response,next)=>{
       let  result = await calender.findOneAndDelete({_id:request.params.id})
         calenderObject = await result
         //PULL calender id from doctor
-    doctors.findByIdAndUpdate(
-        { _id: calenderObject.doctor },
-        { $pull: { calender: { $in: [id] } } },
-        { new: true },
-        (err, doctor) => {
-          if (err) {
-            response.status(500).send(err);
-          }
-          if (doctor) {
-            response.status(200).json({success:true,messege:"Delete done successfully",doctorCalender:`${doctor.calender}`})
-          } else {
-            response.status(400).send("Bad request - User not found");
-          }
+        if(calenderObject){
+            doctors.findByIdAndUpdate(
+                { _id: calenderObject.doctor },
+                { $pull: { calender: { $in: [id] } } },
+                { new: true },
+                (err, doctor) => {
+                  if (err) {
+                    response.status(500).send(err);
+                  }
+                  if (doctor) {
+                    response.status(200).json({success:true,messege:"Delete done successfully",doctorCalender:`${doctor.calender}`})
+                  } else {
+                    response.status(400).send("Bad request - User not found");
+                  }
+                }
+              );
+        }else{
+            next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
         }
-      );
+   
     }
     catch (error){
         throw next(new Error(error))
