@@ -108,8 +108,10 @@ exports.getCalender =(request,response,next)=>{
         calender.findOne({_id:request.params.id})
         .then(data=>{
             if(data!=null){
-                if(data.doctor==request.id)
-                response.status(200).json(data);
+                if(data.doctor==request.id){
+                    console.log(request.id)
+                response.status(200).json(data);   
+                }
                 else next(new Error('Not Authorized'))
             }else{
                 next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))

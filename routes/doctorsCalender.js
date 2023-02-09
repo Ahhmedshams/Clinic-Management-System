@@ -11,7 +11,7 @@ require('../model/doctorCalender');
 
 
 router.route("/")
-  .get(allowedUsers.checkWithRole("admin","employee","doctor"),advancedResults(calender),controller.getCalenders)
+  .get(allowedUsers.checkWithRole("admin","employee"),advancedResults(calender),controller.getCalenders)
   .post(allowedUsers.checkWithRole("admin","employee"),validation.calenderPost,validator, controller.createCalender)
 
 
