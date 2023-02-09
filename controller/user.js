@@ -6,8 +6,7 @@ const LoggerServices = require('./../services/loggerServices')
 
 require('./../model/user');
 require('./../model/employee')
-const UserSchema = mongoose.model("users");
-const EmployeeSchema = mongoose.model("employee");
+const user = mongoose.model("users");
 const logger=new LoggerServices('user');
 
 
@@ -16,14 +15,19 @@ exports.getAllUsers = (request, response, next) => {
     response.status(200).json(response.advancedResults)
 }
 
-exports.deleteUserByID = (request, response, next) => {
-    UserSchema.findByIdAndDelete(request.params.id)
-        .then((result) => {
-            if (result != null) {
-                response.status(200).json({ "message": "This user is deleted" })
-            } else {
-                throw new Error("This user is not exist")
-            }
-        })
-        .catch(error => next(error))
+
+// @desc     Delete User
+// @route    DELETE /User/:id
+// @access   ----
+
+exports.deleteUser = async  (request, response, next) => {
+    const userObject = await user.findById(request.params.id);
+    if (!userObject) {
+        return next(
+          new ErrorResponse(`user not found with id of ${request.params.id}`, 404)
+        );
+      }
+      logger.info(`delete user with id: ${request.params.id}`);
+      userObject.remove();
+      response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

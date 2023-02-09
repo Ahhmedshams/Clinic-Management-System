@@ -36,6 +36,7 @@ const advancedResults = (model, populate)=> async (request,response,next)=>{
             limit
         }
     } 
+    console.log(populate)
     if(populate){
         await model.find(JSON.parse(queryStr))
     .select(fields)

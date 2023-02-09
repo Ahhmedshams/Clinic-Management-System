@@ -18,7 +18,7 @@ const Schema = new mongoose.Schema({
         }
     },
     medicines: { type: Array, ref: "medicine" },
-    doctors: { type: Array, ref: "doctor" },
+    doctors: { type: Array, ref: "doctors" },
     employees: { type: Array, ref: "employee" },
     Patient: { type: Array, ref: "patient" }
 }, { _id: false })

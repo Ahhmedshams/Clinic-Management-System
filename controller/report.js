@@ -70,12 +70,11 @@ exports.getAppointmentReport=(request,response,next)=>{
 
 
 exports.getDailyreport = (request, response , next)=>{
-    console.log("hello")
     appointment.findOne({ date: request.params.date }, { __v: 0 })
     .then(data=>{
         response.status(200).json({
             success:true,
-            // count:data.length,
+            count:data.length,
             data:data
         })
     })

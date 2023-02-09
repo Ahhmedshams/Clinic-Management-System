@@ -15,8 +15,8 @@ const doctorSchema = new mongoose.Schema({
     enum: ['male', 'female'],
     required: [true, "Gender of the doctor is required"]
   },
-  imge:{
-    type:String,
+  imge: {
+    type: String,
   },
   email: {
     type: String,
@@ -58,10 +58,10 @@ const doctorSchema = new mongoose.Schema({
 
 
 // Cascade delete Ref when a patient is deleted
-doctorSchema.pre('remove', async function(next) {
+doctorSchema.pre('remove', async function (next) {
   console.log(`calender being removed from Doctor ${this._id}`);
   await this.model('calender').deleteMany({ doctor: this._id });
-  await this.model('users').deleteMany({ doctorsRef_id:  this._id });
+  await this.model('users').deleteMany({ doctorsRef_id: this._id });
   next();
 });
 
