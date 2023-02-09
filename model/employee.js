@@ -1,19 +1,12 @@
 const mongoose=require("mongoose")
- const bcrypt = require("bcrypt");
 const schemas = require('./schemas');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 
 const employeeSchema =new mongoose.Schema({
-    fullName:{
-        type:String,
-        required:true,
-        maxlength:[50,'Name can not be more than 50 characters']
-    },
-    hireDate:{
-        type:Date,
-        default:new Date().toLocaleDateString("en-US")
-    },
+    _id:{type:Number},
+    name:{type:String,required:true,maxLength:20},
+    hireDate:{type:Date,default:Date.now},
     birth_date:{type:Date},
     email:{
         type:String,
@@ -31,24 +24,17 @@ const employeeSchema =new mongoose.Schema({
     gender:{
         type:String,
         required:true,
-        enum :["Male","Female"]
+        enum :["male","female"]
     },
-    password:{type:String,required:true},
-    clinicId: {
-        type: Number,
-        ref: "clinic",
-      },
     address:schemas.addressSchema
 },{_id:false})
 
-
-
-employeeSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-  
-    this.password = await bcrypt.hash(this.password, 12);
+// Cascade delete Ref when a employee is deleted
+employeeSchema.pre('remove', async function(next) {
+    await this.model('users').deleteMany({ employeeRef_id:  this._id });
     next();
   });
+
 
 employeeSchema.plugin(AutoIncrement, {id: 'employee_id_counter', inc_field:'_id'});
 

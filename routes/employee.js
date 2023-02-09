@@ -5,24 +5,24 @@ const employeeController=require("../controller/employee");
 const advancedResults = require ("./../middlewares/advancedResult");
 require('./../model/employee');
 const mongoose = require("mongoose")
+const allowedUsers =require("./../middlewares/AuthorizeRole");
 
 const employee= mongoose.model('employee');
 
 const router = express.Router();
 //Without Id
 router.route("/employee")
-.get(advancedResults(employee),employeeController.getAllEmployees)
-.post( validation.employeePost,validator,employeeController.addEmployee)
-.patch(validation.employeeUpdate,validator,employeeController.updateEmployee)
+.get(allowedUsers.checkWithRole("admin"),advancedResults(employee),employeeController.getAllEmployees)
+.post(allowedUsers.checkWithRole("admin"),validation.employeePost,validator,employeeController.addEmployee)
 
 
 //Route ID
 router.route("/employee/:id")
-.get(
+.get(allowedUsers.checkWithRole("admin","employee"),
     validation.paramIdInt,validator,employeeController.getEmployeeById)
-.delete(
-    validation.paramIdInt,validator,employeeController.deleteChildById)
-.patch(
-    validation.paramIdInt,validator,employeeController.updateEmployeeById)
+.delete(allowedUsers.checkWithRole("admin"),
+    validation.paramIdInt,validator,employeeController.deleteById)
+.patch(allowedUsers.checkWithRole("admin,employee"),
+    validation.paramIdInt,validator,employeeController.updateEmployee)
 
 module.exports=router;

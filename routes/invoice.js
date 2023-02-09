@@ -6,21 +6,24 @@ const expressValidation = require("./../middlewares/validations")
 const mongoose = require('mongoose');
 
 const advancedResults = require("./../middlewares/advancedResult");
+const allowedUsers = require("./../middlewares/AuthorizeRole");
 
 const invoice = mongoose.model('invoice');
 
 
 router.route("/invoice")
-    .get(advancedResults(invoice), controller.getAllinvoice)
-    .post(expressValidation.invoicePost, validator, controller.addInvoice)
-    .patch(expressValidation.invoiceUpdate, validator, controller.updateInvoice)
+    .get(allowedUsers.checkWithRole("admin"), advancedResults(invoice), controller.getAllinvoice)
+    .post(allowedUsers.checkWithRole("admin", "employee"), expressValidation.invoicePost, validator, controller.addInvoice)
+    .patch(allowedUsers.checkWithRole("admin", "employee"), expressValidation.invoiceUpdate, validator, controller.updateInvoice)
 
 
 router.get("/invoice/:id",
+    allowedUsers.checkWithRole("admin"),
     validator,
     controller.getInvoiceByID)
 
 router.delete("/invoice/:id",
+    allowedUsers.checkWithRole("admin"),
     validator, controller.deleteInvoiceByID)
 
 

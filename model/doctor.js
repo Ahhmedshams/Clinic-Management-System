@@ -15,6 +15,9 @@ const doctorSchema = new mongoose.Schema({
     enum: ['male', 'female'],
     required: [true, "Gender of the doctor is required"]
   },
+  imge: {
+    type: String,
+  },
   email: {
     type: String,
     match: [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]+)*$/, "Please enter a valid email"],
@@ -22,7 +25,6 @@ const doctorSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-  password: { type: String, required: true },
   phone: {
     type: String,
     match: [/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/g, "It is not a valid phone or line number"],
@@ -49,25 +51,20 @@ const doctorSchema = new mongoose.Schema({
     type: Number,
     ref: "clinic",
   },
-  appointmentId: {
-    type: Array,
-    ref: "appointment"
-  },
   price: {
     type: Number,
   },
 }, { _id: false })
 
-doctorSchema.pre('save', async function (next) {
-  try {
-    const salt = await bcrypt.genSalt(12);
-    const hasdedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hasdedPassword;
-    next()
-  }
-  catch (error) {
-    next(error);
-  }
-})
+
+// Cascade delete Ref when a patient is deleted
+doctorSchema.pre('remove', async function (next) {
+  console.log(`calender being removed from Doctor ${this._id}`);
+  await this.model('calender').deleteMany({ doctor: this._id });
+  await this.model('users').deleteMany({ doctorsRef_id: this._id });
+  next();
+});
+
+
 doctorSchema.plugin(AutoIncrement, { id: 'doctor_id_counter', inc_field: '_id' });
 mongoose.model("doctors", doctorSchema);

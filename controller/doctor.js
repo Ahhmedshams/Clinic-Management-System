@@ -1,10 +1,17 @@
 const express = require("express")
 const mongoose = require("mongoose");
 const ErrorResponse = require('./../utils/errorResponse')
-require("./../model/doctor")
-const doctorSchema = mongoose.model("doctors");
+const LoggerServices = require('./../services/loggerServices')
 
-exports.newAppointment = (request, response, next) => {
+require("./../model/doctor");
+require('./../model/user');
+const doctorSchema = mongoose.model("doctors");
+const user = mongoose.model('users');
+const logger = new LoggerServices('doctor');
+
+
+// @desc     reRoute
+exports.reRoute = (request, response, next) => {
     doctorSchema.findOne({ _id: request.params.doctorId })
         .then(data => {
             if (data != null) {
@@ -19,101 +26,149 @@ exports.newAppointment = (request, response, next) => {
 }
 
 exports.getAllDoctors = (request, response, next) => {
+    logger.info(`get doctor list`, response.advancedResults);
     response.status(200).json(response.advancedResults)
 }
-// exports.getAllDoctors = (request, response, next) => {
-//     doctorSchema.find({})
-//         .then((data) => {
-//             response.status(200).json({
-//                 message: "List of Doctors", data
-//             });
-//         })
-//         .catch(error => { next(error) })
-// }
 
-exports.addNewDoctor = (request, response, next) => {
-    let newDoctor = new doctorSchema({
-        name: request.body.name,
-        gender: request.body.gender,
-        email: request.body.email,
-        password: request.body.password,
-        phone: request.body.phone,
-        address: request.body.address,
-        speciality: request.body.speciality,
-        yearsOfExperience: request.body.yearsOfExperience,
-        calender: request.body.calender,
-        clinicId: request.body.clinicId,
-        appointmentId: request.body.appointmentId,
-        price: request.body.price
-    });
-    newDoctor.save()
-        .then((result) => {
-            response.status(200).json({ message: "Doctor added successfully", result })
-        })
-        .catch(error => { next(error) })
+exports.addNewDoctor = async (request, response, next) => {
+    let doctorExist = await doctorSchema.count({ email: request.body.email });
+    if (!doctorExist) {
+
+        let newDoctor = new doctorSchema({
+            name: request.body.name,
+            gender: request.body.gender,
+            email: request.body.email,
+            //image:request.file.filename,
+            phone: request.body.phone,
+            address: request.body.address,
+            speciality: request.body.speciality,
+            yearsOfExperience: request.body.yearsOfExperience,
+            calender: request.body.calender,
+            clinicId: request.body.clinicId,
+            appointmentId: request.body.appointmentId,
+            price: request.body.price
+        });
+        newDoctor.save()
+            .then((result) => {
+                let newUser = new user({
+                    password: request.body.password,
+                    email: request.body.email,
+                    role: "doctor",
+                    doctorsRef_id: result._id
+                })
+                newUser.save()
+                logger.info(`add doctor with id: ${request.params.id}`, response.advancedResults);
+                response.status(200).json({ message: "Doctor added successfully", result })
+            })
+            .catch(error => { next(error) })
+    } else {
+        logger.error(`faild to add doctor with id: ${request.params.id}`);
+        next(new Error("This email is already exist!"));
+    }
+
 }
+
+
+
+function specificDoctorUpdate(request, response, next) {
+    user.updateOne({
+        doctorsRef_id: request.params.id
+    }, {
+        $set: {
+            email: request.body.email,
+            password: request.body.password,
+            role: "doctor"
+        }
+    }).then(res => {
+
+        doctorSchema.updateOne(
+            { _id: request.params.id },
+            {
+                $set: {
+                    name: request.body.name,
+                    gender: request.body.gender,
+                    email: request.body.email,
+                    //image:request.file.filename,
+                    phone: request.body.phone,
+                    address: request.body.address,
+                    speciality: request.body.speciality,
+                    yearsOfExperience: request.body.yearsOfExperience,
+                    calender: request.body.calender,
+                    clinicId: request.body.clinicId,
+                    appointmentId: request.body.appointmentId,
+                    price: request.body.price
+                }
+            },
+            {}
+        )
+            .then(result => {
+                if (result.matchedCount == 0) {
+                    logger.error(`faild to update doctor with id: ${request.params.id}`);
+                    throw new Error("This doctor is not exist");
+                }
+                else {
+                    logger.info(`update Doctor with id: ${request.params.id}`, response.advancedResults);
+                    response.status(200).json({ message: "Doctor updated successfully" })
+                }
+            })
+            .catch(error => { next(error) })
+    })
+}
+
 
 exports.updateDoctor = (request, response, next) => {
-    doctorSchema.updateOne(
-        { _id: request.params.id },
-        {
-            $set: {
-                name: request.body.name,
-                gender: request.body.gender,
-                email: request.body.email,
-                password: request.body.password,
-                phone: request.body.phone,
-                address: request.body.address,
-                speciality: request.body.speciality,
-                yearsOfExperience: request.body.yearsOfExperience,
-                calender: request.body.calender,
-                clinicId: request.body.clinicId,
-                appointmentId: request.body.appointmentId,
-                price: request.body.price
-            }
-        },
-    )
-        .then(result => {
-            if (result.matchedCount == 0) {
-                throw new Error("This doctor is not exist");
-            }
-            else {
-                response.status(200).json({ message: "Doctor updated successfully" })
-            }
-        })
-        .catch(error => { next(error) })
+    if (request.role == "doctor" && request.params.id == request.id) {
+        specificDoctorUpdate(request, response, next)
+    } else if (request.role == "admin" || request.role == "employee") {
+        specificDoctorUpdate(request, response, next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
 }
 
-// exports.deleteDoctor = (request, response, next) => {
-//     doctorSchema.findByIdAndDelete({ _id: request.body._id }, {})
-//         .then(result => {
-//             if (result != null) { response.status(200).json({ message: "Doctor deleted successfully " }) }
-//             else { throw new Error("This doctor in not exist") }
-//         })
-//         .catch(error => { next(error) })
-// }
 
-exports.getDoctorById = (request, response, next) => {
+
+function specificDoctor(request, response, next) {
     doctorSchema.findOne({ _id: request.params.id })
         .then((data) => {
             if (data != null) {
+                logger.info(`get doctor with id: ${request.params.id}`);
                 response.status(200).json(data)
             }
             else {
+                logger.error(`faild to get doctor with id: ${request.params.id}`);
                 throw new Error("Doctor not found")
             }
         })
         .catch(error => next(error))
 }
 
-exports.deleteDoctorById = (request, response, next) => {
-    doctorSchema.deleteOne({ _id: request.params.id })
-        .then((result) => {
-            if (result != null) {
-                response.status(200).json({ "message": "Doctor deleted successfully " })
-            } else {
-                throw new Error("This doctor in not exist")
-            }
-        })
-        .catch(error => next(error))
+exports.getDoctorById = (request, response, next) => {
+    if (request.role == "doctor" && request.params.id == request.id) {
+        specificDoctor(request, response, next)
+    } else if (request.role == "admin" || request.role == "employee") {
+        specificDoctor(request, response, next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
+}
+
+// @desc     Delete doctor
+// @route    DELETE /doctor/:id
+// @access   ----
+exports.deleteDoctor = async (request, response, next) => {
+    const doctorObject = await doctorSchema.findById(request.params.id);
+    if (!doctorObject) {
+        logger.error(`faild to delete doctor with id: ${request.params.id}`);
+        return next(
+            new ErrorResponse(`doctor not found with id of ${request.params.id}`, 404)
+        );
+    }
+    doctorObject.remove();
+    logger.info(`delete doctor with id: ${request.params.id}`, response.advancedResults);
+    response.status(200).json({ success: true, messege: "Delete done successfully" })
 }

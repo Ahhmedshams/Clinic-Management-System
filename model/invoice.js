@@ -13,6 +13,10 @@ const schema = new mongoose.Schema({
         type: Date,
         min: '2023-01-01'
     },
+    status:{
+        type:String,
+        enum:["Success","Failed"]
+    },
     doctor: { type: Number, ref: "doctor" },
     patient: { type: Number, ref: "patient" },
     status:{

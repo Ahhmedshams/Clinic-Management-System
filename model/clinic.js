@@ -18,16 +18,11 @@ const Schema = new mongoose.Schema({
         }
     },
     medicines: { type: Array, ref: "medicine" },
-    doctors: { type: Array, ref: "doctor" },
+    doctors: { type: Array, ref: "doctors" },
     employees: { type: Array, ref: "employee" },
     Patient: { type: Array, ref: "patient" }
 }, { _id: false })
-// schema.pre('save', async function (next) {
-//     const salt = await bcrypt.genSalt();
-//     this.password = await bcrypt.hash(this.password, salt)
-//     next();
-// })
-//
+
 
 Schema.plugin(AutoIncrement, { id: 'clinic_id_counter', inc_field: '_id' });
 

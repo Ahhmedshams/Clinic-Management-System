@@ -57,6 +57,10 @@ exports.addNewMedicine=(request,response,next)=>{
     
 }
 exports.updateMedicineData=(request,response,next)=>{
+    if (Object.keys(request.body).length === 0) {
+        next(new ErrorResponse("Empty data", 400))
+    }
+
     let errors= validationResult(request);
     console.log(errors);
     if(!errors.isEmpty()){

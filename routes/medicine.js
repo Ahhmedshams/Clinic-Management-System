@@ -5,6 +5,7 @@ const validation = require("./../middlewares/validations");
 
 const controller= require('../controller/medicine');
 const advancedResults = require ("./../middlewares/advancedResult");
+const allowedUsers = require("./../middlewares/AuthorizeRole");
 
 require('./../model/medicine');
 const medicine = mongoose.model('medicine');
@@ -12,12 +13,13 @@ const medicine = mongoose.model('medicine');
 // generate route to carry our method
 const router=express.Router();
 router.route("/")
-.get(advancedResults(medicine),validator,controller.getAllMedicines)
-.post(validation.medicinePost ,validator ,controller.addNewMedicine)
+.get(allowedUsers.checkWithRole("admin"),advancedResults(medicine),validator,controller.getAllMedicines)
+.post(allowedUsers.checkWithRole("admin"),validation.medicinePost ,validator ,controller.addNewMedicine)
 
 router.route("/:id")
-.delete(validation.paramIdInt,controller.deleteMedicine)
-.patch(validation.paramIdInt,validator,controller.updateMedicineData)
-.get(validation.paramIdInt,controller.getMedicineID)
+.delete(allowedUsers.checkWithRole("admin"),validation.paramIdInt,controller.deleteMedicine)
+.get(allowedUsers.checkWithRole("admin"),validation.paramIdInt,controller.getMedicineID)
+.patch(allowedUsers.checkWithRole("admin"),validation.medicineUpdate,validator,controller.updateMedicineData)
+
 
 module.exports=router;

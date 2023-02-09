@@ -2,7 +2,7 @@ const moment = require("moment");
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler');
 const ErrorResponse = require('./../utils/errorResponse');
-const { response } = require("express");
+const { response, request } = require("express");
 const momentDurationFormatSetup = require("moment-duration-format");
 require('./../model/doctorCalender');
 require("./../model/doctor");
@@ -28,15 +28,16 @@ exports.createCalender = async (request,response,next) => {
     if (!(request.body.startAt && request.body.endAt && request.body.date)) {
         next(new ErrorResponse("Please Enter a specific time", 422));
     }
-
     const doctorId = parseInt(request.doctorId);
     const startAt = moment(request.body.startAt, "h:mm a");
     const endAt = moment(request.body.endAt, "h:mm a");
-    const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
+    const date = moment(request.body.date, "yyyy-MM-DD").format("yyyy-MM-DD");
     const totalWorking = moment.duration(endAt.diff(startAt));
     const totalWorkingMinutes = moment.duration(endAt.diff(startAt)).asMinutes();
     let totalWorkingHours = totalWorking.hours() + 'h,' + totalWorking.minutes() + 'm'
-   
+   if(totalWorkingMinutes<=0){
+    next(new ErrorResponse ("Error in Time YOU SHOULD USE 24h Format"))
+   }
     let numDurations = totalWorkingMinutes /30 ;
     let schedule = [];
     let currentTime = startAt;
@@ -62,7 +63,6 @@ exports.createCalender = async (request,response,next) => {
         }else{
             let newCalenderId;
             let newCalender = new calender({
-            weekday: request.body.weekday,
             date: date,
             startAt: startAt.format("h:mm a"),
             endAt: endAt.format("h:mm a"),
@@ -100,16 +100,32 @@ exports.createCalender = async (request,response,next) => {
 // @desc     Get single Calender
 // @route    GET /calender/:id
 // @access   Public
+
+
+
 exports.getCalender =(request,response,next)=>{
-    calender.findOne({_id:request.params.id})
-    .then(data=>{
-        if(data!=null){
-            response.status(200).json(data);
-        }else{
-            next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
-        }
-    })
-    .catch(error=>next(new Error))
+    if(request.role=="doctor"){
+        calender.findOne({_id:request.params.id})
+        .then(data=>{
+            if(data!=null){
+                if(data.doctor==request.id)
+                response.status(200).json(data);
+                else next(new Error('Not Authorized'))
+            }else{
+                next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
+            }
+        })
+        .catch(error=>next(error))
+    }else{
+        calender.findOne({_id:request.params.id})
+        .then(data=>{
+            if(data!=null){
+                response.status(200).json(data);
+            }else{
+                next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
+            }
+        })
+    }
 }
 
 // @desc     delete calender

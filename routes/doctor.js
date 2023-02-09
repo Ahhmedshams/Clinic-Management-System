@@ -3,30 +3,33 @@ const validator = require("../middlewares/errorValidation");
 const validation = require("../middlewares/validations")
 const controller = require("../controller/doctor");
 const calenderRouter = require("./doctorsCalender");
-const { param } = require("express-validator");
+const appointmentRouter = require("./appointment");
+const allowedUsers =require("./../middlewares/AuthorizeRole");
+
 require('./../model/doctor');
 
 const mongoose = require('mongoose');
 const advancedResults = require("../middlewares/advancedResult");
+const { request } = require("express");
 const doctors = mongoose.model('doctors');
 const router = express.Router();
 
-router.use('/doctors/:doctorId/calender', controller.newAppointment, calenderRouter)
+router.use('/doctors/:doctorId/calender',allowedUsers.checkWithRole("admin","employee","doctor"),controller.reRoute, calenderRouter)
+router.use('/doctors/:doctorId/appointment', controller.reRoute, appointmentRouter)
+
 
 router.route("/doctors")
-      .get(advancedResults(doctors), controller.getAllDoctors)
-      .post(validation.doctorPost, validator, controller.addNewDoctor)
-      .patch(validation.updateDoctor, validator, controller.updateDoctor)
-// .delete(controller.deleteDoctor)
+      .get(allowedUsers.checkWithRole("admin"),advancedResults(doctors), controller.getAllDoctors)
+      .post(allowedUsers.checkWithRole("admin"),validation.doctorPost, validator, controller.addNewDoctor)
 
 router.route("/doctors/:id")
-      .get(
-            param("id").isInt().withMessage("Id should be integer"),
+      .get(allowedUsers.checkWithRole("doctor","admin"),
+            validation.paramIdInt,
             validator, controller.getDoctorById)
-      .patch(validation.updateDoctor, validator, controller.updateDoctor)
-      .delete(
-            param("id").isInt().withMessage("Id should be integer"),
-            validator, controller.deleteDoctorById)
+      .patch(allowedUsers.checkWithRole("doctor","admin"),validation.updateDoctor, validator, controller.updateDoctor)
+      .delete(allowedUsers.checkWithRole("admin"),
+            validation.paramIdInt,
+            validator, controller.deleteDoctor)
 
 
 module.exports = router;
