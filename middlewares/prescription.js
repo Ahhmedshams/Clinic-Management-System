@@ -3,8 +3,8 @@ const prescription=[
   // body("id").optional().isNumeric()
   // .withMessage("fName Shoud be string"),
     body("date").isDate().withMessage("lnvalid date"),
-    body("docName").isNumeric().withMessage("docname shold be string"),
-    body("patientName").isNumeric().withMessage("invalid patient name"),
+    body("doctorId").isNumeric().withMessage("docname shold be string"),
+    body("patientId").isNumeric().withMessage("invalid patient name"),
     body("medicine").isArray().withMessage("Medicine should be array")
   ] ;
  

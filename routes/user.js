@@ -6,6 +6,7 @@ const validator = require("./../middlewares/errorValidation");
 const validaton = require("./../middlewares/validations");
 const expressValidation = require("./../middlewares/validations")
 const mongoose = require('mongoose');
+const allowedUsers =require("./../middlewares/AuthorizeRole");
 
 const advancedResults = require("./../middlewares/advancedResult");
 const user = mongoose.model('users');
@@ -13,7 +14,7 @@ const user = mongoose.model('users');
 router.post('/users/signup', authcontroller.signup);
 
 router.route("/users")
-    .get(advancedResults(user), controller.getAllUsers)
+    .get(allowedUsers.checkWithRole("admin"),advancedResults(user), controller.getAllUsers)
 
 
 
@@ -21,7 +22,7 @@ router.route("/users")
 //     validator,
 //     controller.getUserByID)
 
-router.delete("/users/:id", validaton.paramIdInt,  validator, controller.deleteUser)
+router.delete("/users/:id", allowedUsers.checkWithRole("admin"),validaton.paramIdInt,  validator, controller.deleteUser)
 
 
 module.exports = router;

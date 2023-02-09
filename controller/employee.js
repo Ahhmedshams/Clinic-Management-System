@@ -18,10 +18,8 @@ exports.getAllEmployees = (request, response, next) => {
 }
 
 
-
-
-//Get Employee By Id
-exports.getEmployeeById=(request,response,next)=>{
+///-----------------------------------------
+function specificEmployee(request, response, next) {
     employeeSchema.findOne(
         { _id:request.params.id }).populate({ path:"clinicId" , select: { _id:0 , name:1 } })
         .then(data=>{
@@ -35,6 +33,19 @@ exports.getEmployeeById=(request,response,next)=>{
         }).catch(error=>next(error))
 }
 
+//Get Employee By Id
+exports.getEmployeeById=(request,response,next)=>{
+    if (request.role == "employee" && request.params.id == request.id) {
+        specificEmployee(request, response, next)
+    } else if (request.role == "admin") {
+        specificEmployee(request, response, next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
+}
+///------------------------------------------------
 
 
 
@@ -70,8 +81,10 @@ exports.addEmployee = async(request, response, next) => {
 }
 }
 
-//U
-exports.updateEmployee = (request, response, next) => {
+
+//U ---------------------------------------------------
+
+function specificEmployeeUpdate(request, response, next) {
     user.updateOne({
         employeeRef_id: request.params.id
     }, {
@@ -112,6 +125,21 @@ exports.updateEmployee = (request, response, next) => {
         .catch(error => next(error))
 })
 }
+
+//U ---------------------------------------------------
+exports.updateEmployee = (request, response, next) => {
+    if (request.role == "employee" && request.params.id == request.id) {
+        specificEmployeeUpdate(request,response,next)
+    } else if (request.role == "admin") {
+        specificEmployeeUpdate(request,response,next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
+    
+}
+//U ---------------------------------------------------
 
 
 // @desc     Delete employee

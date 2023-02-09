@@ -2,7 +2,7 @@ const moment = require("moment");
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler');
 const ErrorResponse = require('./../utils/errorResponse');
-const { response } = require("express");
+const { response, request } = require("express");
 const momentDurationFormatSetup = require("moment-duration-format");
 require('./../model/doctorCalender');
 require("./../model/doctor");
@@ -100,16 +100,32 @@ exports.createCalender = async (request,response,next) => {
 // @desc     Get single Calender
 // @route    GET /calender/:id
 // @access   Public
+
+
+
 exports.getCalender =(request,response,next)=>{
-    calender.findOne({_id:request.params.id})
-    .then(data=>{
-        if(data!=null){
-            response.status(200).json(data);
-        }else{
-            next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
-        }
-    })
-    .catch(error=>next(new Error))
+    if(request.role=="doctor"){
+        calender.findOne({_id:request.params.id})
+        .then(data=>{
+            if(data!=null){
+                if(data.doctor==request.id)
+                response.status(200).json(data);
+                else next(new Error('Not Authorized'))
+            }else{
+                next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
+            }
+        })
+        .catch(error=>next(error))
+    }else{
+        calender.findOne({_id:request.params.id})
+        .then(data=>{
+            if(data!=null){
+                response.status(200).json(data);
+            }else{
+                next(new ErrorResponse(`calender doesn't exist with id of ${request.params.id}`,404))
+            }
+        })
+    }
 }
 
 // @desc     delete calender

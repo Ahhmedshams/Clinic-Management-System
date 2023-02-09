@@ -15,7 +15,7 @@ module.exports.checkWithRole = (...allowed) => {
 
 
 module.exports.checkWithId = (request, response, next) => {
-  console.log(request);
+  
   if (request.id == request.params.id)
     next()
   else {

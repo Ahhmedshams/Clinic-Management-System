@@ -36,10 +36,9 @@ exports.getPatients =  (request,response,next)=>{
     response.status(200).json(response.advancedResults)
 }
 
-// @desc     Get single Patient
-// @route    GET /patient/:id
-// @access   Public
-exports.getPatient =(request,response,next)=>{
+
+
+function specificPatient(request, response, next) {
     patient.findOne({_id:request.params.id})
     .then(data=>{
         if(data!=null){
@@ -50,6 +49,22 @@ exports.getPatient =(request,response,next)=>{
         }
     })
     .catch(error=>next(new Error))
+}
+
+
+// @desc     Get single Patient
+// @route    GET /patient/:id
+// @access   Public
+exports.getPatient =(request,response,next)=>{
+    if (request.role == "patient" && request.params.id == request.id) {
+        specificPatient(request, response, next)
+    } else if (request.role == "admin") {
+        specificPatient(request, response, next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
 }
 
 // @desc     Create Patient
@@ -65,6 +80,7 @@ exports.createPatient = async (request,response,next)=>{
             email: request.body.email,
             phone: request.body.phone,
             address: request.body.address,
+            prescriptions:request.body.prescriptions
         })
         newPatient.save()
             .then(result => {
@@ -88,11 +104,9 @@ exports.createPatient = async (request,response,next)=>{
    
 }
 
-// @desc     Update Patient
-// @route    PATCH /patient/:id
-// @access   ----
-exports.updatePatient =(request,response,next)=>{
-    
+
+function specificPatientUpdate(request, response, next) {
+     
     if (Object.keys(request.body).length === 0) {
         next(new ErrorResponse("Empty data", 400))
     }
@@ -133,7 +147,23 @@ exports.updatePatient =(request,response,next)=>{
             }
         })
     })
-   
+}
+
+
+// @desc     Update Patient
+// @route    PATCH /patient/:id
+// @access   ----
+exports.updatePatient =(request,response,next)=>{
+
+    if (request.role == "patient" && request.params.id == request.id) {
+        specificPatientUpdate(request,response,next)
+    } else if (request.role == "admin") {
+        specificPatientUpdate(request,response,next)
+    } else {
+        let error = new Error("Not Authorized");
+        error.status = 403;
+        next(error)
+    }
 }
 
 // @desc     Delete Patient

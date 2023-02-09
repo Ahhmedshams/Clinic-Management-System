@@ -5,27 +5,28 @@ const router = express.Router();
 const validator = require("../middlewares/errorValidation");
 const validation = require("./../middlewares/validations");
 const vprescription = require("../middlewares/prescription");
+const allowedUsers =require("./../middlewares/AuthorizeRole");
 
 router
   .route("/prescription")
-  .get(prescriptionController.getAllrecriptiondata) 
-  .post(vprescription,validator,prescriptionController.addrecriptiondata ) 
+  .get(allowedUsers.checkWithRole("admin","doctor","patient"),prescriptionController.getAllrecriptiondata) 
+  .post(allowedUsers.checkWithRole("doctor"),vprescription,validator,prescriptionController.addrecriptiondata ) 
   
 
 
 
   router.route("/prescription/:id")
-  .get(validation.paramIdInt,validator,
+  .get(allowedUsers.checkWithRole("admin"),validation.paramIdInt,validator,
   prescriptionController.getprecriptionByID)
 
 
-.patch(
+.patch(allowedUsers.checkWithRole("doctor"),
   validation.paramIdInt,
   validator,prescriptionController.updaterecriptionId
 )
 
 
-  .delete( validation.paramIdInt,
+  .delete(allowedUsers.checkWithRole("admin"), validation.paramIdInt,
   validator, prescriptionController.deleteprecriptionByID)
 
 

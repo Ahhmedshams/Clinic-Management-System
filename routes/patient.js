@@ -26,8 +26,8 @@ router.route("/patient")
 
 
 router.route("/patient/:id")
-.get(allowedUsers.checkWithRole("patient"),allowedUsers.checkWithId,validation.paramIdInt,validator,controller.getPatient)
-.delete(allowedUsers.checkWithRole("patient"),allowedUsers.checkWithId,validation.paramIdInt,validator,controller.deletePatient)
-.patch(allowedUsers.checkWithRole("patient"),allowedUsers.checkWithId,validation.patientUpdate,validator,controller.updatePatient)
+.get(allowedUsers.checkWithRole("admin","patient"),validation.paramIdInt,validator,controller.getPatient)
+.delete(allowedUsers.checkWithRole("admin"),validation.paramIdInt,validator,controller.deletePatient)
+.patch(allowedUsers.checkWithRole("admin","patient"),validation.patientUpdate,validator,controller.updatePatient)
 
 module.exports=router;

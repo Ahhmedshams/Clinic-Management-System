@@ -11,13 +11,13 @@ require('../model/doctorCalender');
 
 
 router.route("/")
-  .get(allowedUsers.checkWithRole("admin","doctor","employee"),advancedResults(calender),controller.getCalenders)
+  .get(allowedUsers.checkWithRole("admin","employee","doctor"),advancedResults(calender),controller.getCalenders)
   .post(allowedUsers.checkWithRole("admin","employee"),validation.calenderPost,validator, controller.createCalender)
 
 
 
 router.route("/:id")
-  .get(allowedUsers.checkWithRole("admin","employee"),validation.paramIdInt,validator,controller.getCalender)
+  .get(allowedUsers.checkWithRole("admin","doctor","employee"),validation.paramIdInt,validator,controller.getCalender)
   .delete(allowedUsers.checkWithRole("admin","employee"),validation.paramIdInt,validator,controller.deleteCalender)
 
 
