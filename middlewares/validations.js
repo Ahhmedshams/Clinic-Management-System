@@ -124,7 +124,7 @@ exports.invoiceUpdate =
         body("totalCost").optional().isNumeric().withMessage("Total cost should be number"),
         body("date").optional().isDate().withMessage("Please Enter Invalid Date"),
         body("doctor").optional().isNumeric().withMessage("Doctor ID should be number"),
-        body("Patient").optional().isNumeric().withMessage("Patient ID should be number")
+        body("patient").optional().isNumeric().withMessage("Patient ID should be number")
     ]
 
 //-------------------------calender-----------------------------//
