@@ -1,6 +1,7 @@
- const { request, response } = require("express");
-// const verifyusers = (...allowed) => {
-  module.exports= (...allowed) => {
+const { request, response } = require("express");
+
+
+module.exports.checkWithRole = (...allowed) => {
   return (request, response, next) => {
     console.log(request.id);
     let userRole = request.role;
@@ -12,14 +13,30 @@
   };
 };
 
-module.exports.checkWithId=(request,response,next)=>{
+
+module.exports.checkWithId = (request, response, next) => {
   console.log(request);
-  if(request.id==request.params.id)
-  next()
-    else
-    {
-        let error=new Error("Not Authorized");
-        error.status=403;
-        next(error)
-    }
+  if (request.id == request.params.id)
+    next()
+  else {
+    let error = new Error("Not Authorized");
+    error.status = 403;
+    next(error)
   }
+}
+
+
+
+// module.exports.checkWithRoleAndID = (cRole) => {
+
+//   return (request, response, next) => {
+
+//     if (request.role == cRole && request.id == request.params.id)
+//       next()
+//     else {
+//       let error = new Error("Not Authorized");
+//       error.status = 403;
+//       next(error)
+//     }
+//   }
+// }

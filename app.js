@@ -79,6 +79,13 @@ server.use((request, response, next) => {
 // Body Parser (Convert body data to Json format)
 server.use(express.json())
 
+
+//Login
+server.use(loginRouter);
+
+//Authentication MW
+server.use(authinticationMw.login)
+
 //Routes
 server.use(userRouter)
 server.use(patientRouter)

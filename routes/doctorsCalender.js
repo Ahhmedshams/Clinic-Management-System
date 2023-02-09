@@ -7,17 +7,18 @@ const mongoose = require('mongoose');
 const advancedResults = require ("./../middlewares/advancedResult");
 require('../model/doctorCalender');
  const calender= mongoose.model('calender');
+ const allowedUsers =require("./../middlewares/AuthorizeRole");
 
 
 router.route("/")
-  .get(advancedResults(calender),controller.getCalenders)
-  .post(validation.calenderPost,validator, controller.createCalender)
+  .get(allowedUsers.checkWithRole("admin","doctor","employee"),advancedResults(calender),controller.getCalenders)
+  .post(allowedUsers.checkWithRole("admin","employee"),validation.calenderPost,validator, controller.createCalender)
 
 
 
 router.route("/:id")
-  .get(validation.paramIdInt,validator,controller.getCalender)
-  .delete(validation.paramIdInt,validator,controller.deleteCalender)
+  .get(allowedUsers.checkWithRole("admin","employee"),validation.paramIdInt,validator,controller.getCalender)
+  .delete(allowedUsers.checkWithRole("admin","employee"),validation.paramIdInt,validator,controller.deleteCalender)
 
 
 module.exports = router;
