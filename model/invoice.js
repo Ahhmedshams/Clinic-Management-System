@@ -15,10 +15,6 @@ const schema = new mongoose.Schema({
     },
     doctor: { type: Number, ref: "doctor" },
     patient: { type: Number, ref: "patient" },
-    status: {
-        type: String,
-        enum: ["Success", "Failed"]
-    }
     // clinic ref
 }, { _id: false })
 

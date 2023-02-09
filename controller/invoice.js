@@ -13,7 +13,6 @@ exports.getAllinvoice = (request, response, next) => {
 
 exports.addInvoice = (request, response, next) => {
     let newInvoice = new InvoiceSchema({
-        _id: request.body.id,
         paymentType: request.body.paymentType,
         totalCost: request.body.totalCost,
         date: request.body.date,

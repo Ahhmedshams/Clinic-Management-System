@@ -12,7 +12,7 @@ const employee= mongoose.model('employee');
 const router = express.Router();
 //Without Id
 router.route("/employee")
-.get(allowedUsers.checkWithRole("admin"),advancedResults(employee),employeeController.getAllEmployees)
+.get(allowedUsers.checkWithRole("admin"),advancedResults(employee,{ path:"clinicId" , select: { _id:0 , name:1 } }),employeeController.getAllEmployees)
 .post(allowedUsers.checkWithRole("admin"),validation.employeePost,validator,employeeController.addEmployee)
 
 
@@ -22,7 +22,7 @@ router.route("/employee/:id")
     validation.paramIdInt,validator,employeeController.getEmployeeById)
 .delete(allowedUsers.checkWithRole("admin"),
     validation.paramIdInt,validator,employeeController.deleteById)
-.patch(allowedUsers.checkWithRole("admin,employee"),
+.patch(allowedUsers.checkWithRole("admin","employee"),
     validation.paramIdInt,validator,employeeController.updateEmployee)
 
 module.exports=router;

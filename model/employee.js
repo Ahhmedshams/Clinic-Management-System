@@ -26,7 +26,11 @@ const employeeSchema =new mongoose.Schema({
         required:true,
         enum :["male","female"]
     },
-    address:schemas.addressSchema
+    address:schemas.addressSchema,
+    clinicId:{
+        type:Number,
+        ref:'clinic'
+    }
 },{_id:false})
 
 // Cascade delete Ref when a employee is deleted

@@ -109,17 +109,17 @@ exports.clinicUpdate =
 //-------------------------invoice-----------------------------//   
 exports.invoicePost =
     [
-        body("paymentType").isIn(['cash', 'credit card', ' Insurance Card'])
+        body("paymentType").isIn(['Cash', 'Credit Card', ' Insurance Card'])
             .withMessage("Payment Type should be cash or credit card or Insurance Card "),
         body("totalCost").isNumeric().withMessage("Total cost should be number"),
         body("date").isDate().withMessage("Please Enter Invalid Date"),
         body("doctor").isNumeric().withMessage("Doctor ID should be number"),
-        body("Patient").isNumeric().withMessage("Patient ID should be number")
+        body("patient").isNumeric().withMessage("Patient ID should be number")
     ]
 exports.invoiceUpdate =
     [
         paramIdInt,
-        body("paymentType").optional().isIn(['cash', 'credit card', ' Insurance Card'])
+        body("paymentType").optional().isIn(['Cash', 'Credit Card', ' Insurance Card'])
             .withMessage("Payment Type should be cash or credit card or Insurance Card "),
         body("totalCost").optional().isNumeric().withMessage("Total cost should be number"),
         body("date").optional().isDate().withMessage("Please Enter Invalid Date"),
@@ -170,6 +170,7 @@ exports.appointmentUpdate = [
 exports.employeePost=[
     body("birthDate").isString().withMessage("Please Enter Valid Date"),
     body("salary").isNumeric().withMessage("Salary should be number"),
+    body("clinicId").isNumeric().withMessage("clinicId sould be Number"),
     ...phonePost,
     ...addressPost,
     ...userInfoPost,
@@ -179,6 +180,7 @@ exports.employeePost=[
 exports.employeeUpdate=[
     body("birthDate").optional().isString().withMessage("Please Enter Valid Date"),
     body("salary").isNumeric().optional().withMessage("Salary should be number"),
+    body("clinicId").isNumeric().withMessage("clinicId sould be Number"),
     ...addressUpdate,
     ...phoneUpdate,
     ...userInfoUpdate 
