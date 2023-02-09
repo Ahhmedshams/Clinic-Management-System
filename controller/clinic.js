@@ -182,7 +182,9 @@ exports.deleteEmployee = (request, response, next) => {
         { _id: request.params.id },
         { $pull: { employees: request.body.employee } }
     ).then(data => {
-        response.status(201).json(data.employees)
+        response.status(201).json({
+            message:"Employee Deleted Successfully"
+        })
     }).catch(error => {
         next(new Error(error))
     })
