@@ -22,7 +22,7 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
         next(new ErrorResponse("Please Enter a specific time", 422));
     }
     const startAt = moment(request.body.startAt, "hh:mm a");
-    const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
+    const date = moment(request.body.date, "yyyy-MM-DD").format("yyyy-MM-DD");
 
     let object;
     let duration;
@@ -36,7 +36,6 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
         }
 
         query  = await calender.findOne({
-                weekday: request.body.weekday,
                 doctor:  doctorObject._id,
                 date: date,
                 schedule:{ $in: [startAt.format("h:mm a")]}
@@ -50,7 +49,7 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
                 doctorId: doctorObject._id,//no patch 
                 date:date,
                 time:startAt.format("h:mm a"),
-                patientId:response.patientId,
+                patientId:request.patientId,
                 calenderId:calenderObject._id
             })
             newAppointment.save()
@@ -58,7 +57,7 @@ exports.createAppointment = asyncHandler( async (request,response,next)=>{
 
                 //update patient 
                 patient.findByIdAndUpdate(
-                    { _id: response.patientId},
+                    { _id: request.patientId},
                     { $push: { appointment: data._id } }
                 ).then(res=>{
                     console.log(res)
@@ -100,7 +99,9 @@ exports.getAppointment = async (request,response,next)=>{
     
     let query ;
     if(request.patientId){
-        query = appointment.find({patientId: request.patientId})
+        query = appointment.find({patientId: request.patientId}).populate({path: "doctorId", select : {_id:0 ,name:1 ,address:1 ,speciality:1 }})
+        .populate({path: "patientId", select : {_id:0 ,name:1 }})
+       // .populate({ select : {calenderId:0 ,__v:0 }})
         const appointments= await query;
         response.status(200).json({
             success:true,
@@ -129,7 +130,7 @@ exports.updateAppointment = async (request,response,next)=>{
     if(Object.keys(request.body).length === 0){
         next(new ErrorResponse("Empty data",400))
     }
-    const date = moment(request.body.date, "DD-MM-yyyy").format("yyyy-MM-DD");
+    const date = moment(request.body.date, "yyyy-MM-DD").format("yyyy-MM-DD");
     const startAt = moment(request.body.startAt, "hh:mm a");
     let query;
     let appointmentObject;
@@ -148,7 +149,6 @@ exports.updateAppointment = async (request,response,next)=>{
                 schedule:{ $in: [startAt.format("h:mm a")]}
                 })
             let calenderObject = await query;
-            console.log(calenderObject)
             if(calenderObject){
 
                 //update appointment 
@@ -219,9 +219,7 @@ exports.deleteAppointment = async (request,response,next)=>{
     const id = parseInt(request.params.id);
     appointment.findByIdAndDelete({_id:request.params.id})
     .then(appointment=>{
-        console.log(appointment)
 
-        console.log(appointment.patientId)
         patient.findByIdAndUpdate(
             { _id: appointment.patientId},
             { $pull: { appointment: {$in:[appointment._id]} } }
@@ -232,7 +230,7 @@ exports.deleteAppointment = async (request,response,next)=>{
             })
 
         calender.findByIdAndUpdate(
-            { _id: appointment._id},
+            { _id: appointment.calenderId},
             { $push: { schedule:  appointment.time  } }
             ).then(res=>{
                 response.status(200).json({success:true,messege:"Delete done successfully"})
@@ -246,44 +244,4 @@ exports.deleteAppointment = async (request,response,next)=>{
         next(new Error(error))
     })
 
-}
-
-// @desc     GET ALLReport
-// @route    GET /appointment//allreport
-// @access   ----
-exports.getAllreport = (request, response , next)=>{
-    console.log(2)
-    appointment.find()
-    .populate({path: "doctorId", select : {_id:0 }})
-    .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})
-    .then(data=>{
-        response.status(200).json({
-            success:true,
-            count:data.length,
-            data:data
-        })
-    })
-    .catch(error=>{
-
-        next(new Error(error));
-    })
-}
-// @desc     GET ALLReport
-// @route    GET /getDailyreport//allreport
-// @access   ----
-exports.getDailyreport = (request, response , next)=>{
-    appointment.find()
-    .populate({path: "doctorId", select : {_id:0 }})
-    .populate({path: "patientId", select : {_id:0 ,appointment:0,prescriptions:0,invoices:0,password:0}})
-    .then(data=>{
-        response.status(200).json({
-            success:true,
-            count:data.length,
-            data:data
-        })
-    })
-    .catch(error=>{
-
-        next(new Error(error));
-    })
 }

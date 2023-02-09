@@ -11,14 +11,13 @@ require('../model/doctorCalender');
 
 router.route("/")
   .get(advancedResults(calender),controller.getCalenders)
-  .post(controller.createCalender)
+  .post(validation.calenderPost,validator, controller.createCalender)
 
 
 
 router.route("/:id")
   .get(validation.paramIdInt,validator,controller.getCalender)
   .delete(validation.paramIdInt,validator,controller.deleteCalender)
-  //.patch(validation.patientUpdate,validator,controller.updatePatient)
 
 
 module.exports = router;
