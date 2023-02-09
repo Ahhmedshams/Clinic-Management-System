@@ -14,7 +14,6 @@ router.route("/clinic")
     .get(advancedResults(clinic), controller.getAllclinics)
     .post(expressValidation.clinicPost, validator, controller.addClinic)
 
-
 router.route("/clinic/:id")
     .get(expressValidation.paramIdInt, validator, controller.getClinicByID)
     .delete(expressValidation.paramIdInt, validator, controller.deleteClinicByID)
