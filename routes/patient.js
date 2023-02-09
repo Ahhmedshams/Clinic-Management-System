@@ -17,7 +17,7 @@ const router = express.Router();
 
 
 // Re-route into other resource routers 
-router.use('/patient/:patientId/appointment',controller.newAppointment,appointmentRouter)
+router.use('/patient/:patientId/appointment',allowedUsers.checkWithRole("patient"),controller.newAppointment,appointmentRouter)
 
 
 router.route("/patient")
