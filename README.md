@@ -34,6 +34,7 @@ To get the Node server running locally:
 - `routes/` - This folder contains the route definitions for our API.
 - `models/` - This folder contains the schema definitions for our Mongoose models.
 - `middlewares/` - This folder contains the guard of project to deal with server.
+- `utils/` - This folder contains functions we use it in different places in project.
 
 ## Error Handling
 
