@@ -44,6 +44,6 @@ In `routes/api/index.js`, we define a error-handling middleware for handling Mon
 
 Requests are authenticated using the `Authorization` header with a valid JWT. We define two express middlewares in `routes/auth.js` that can be used to authenticate requests. The `required` middleware configures the `express-jwt` middleware using our application's secret and will return a 401 status code if the request cannot be authenticated. The payload of the JWT can then be accessed from `req.payload` in the endpoint. The `optional` middleware configures the `express-jwt` in the same way as `required`, but will *not* return a 401 status code if the request cannot be authenticated.
 
-
 <br />
+![1](https://user-images.githubusercontent.com/56775516/214561276-1cbc44af-ec92-4fe0-955e-773be6229967.png)
 
