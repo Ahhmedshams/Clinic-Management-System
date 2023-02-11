@@ -25,6 +25,8 @@ Alternately, to quickly try out this repo in the cloud, you can [![Remix on Glit
 - [mongoose-unique-validator](https://github.com/blakehaswell/mongoose-unique-validator) - For handling unique validation errors in Mongoose. Mongoose only handles validation at the document level, so a unique index across a collection will throw an exception at the driver level. The `mongoose-unique-validator` plugin helps us by formatting the error like a normal mongoose `ValidationError`.
 - [passport](https://github.com/jaredhanson/passport) - For handling user authentication
 - [slug](https://github.com/dodo/node-slug) - For encoding titles into a URL-friendly format
+- [bycrpt](https://www.npmjs.com/package/bcrypt) - For to store password encrypted
+- [auto increment](https://www.npmjs.com/package/mongoose-auto-increment) - to generate auto increment id instead of mongoosne object id
 
 ## Application Structure
 
@@ -32,6 +34,7 @@ Alternately, to quickly try out this repo in the cloud, you can [![Remix on Glit
 - `config/` - This folder contains configuration for passport as well as a central location for configuration/environment variables.
 - `routes/` - This folder contains the route definitions for our API.
 - `models/` - This folder contains the schema definitions for our Mongoose models.
+- `middlewares/` - This folder contains the guard of project to deal with server.
 
 ## Error Handling
 
