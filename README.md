@@ -1,9 +1,7 @@
 # Clinic-Management-System
 > ### Example Node (Express + Mongoose) codebase containing real world examples (CRUD,filter, sort ,auth, advanced patterns, etc) that adheres to the [RealWorld](https://github.com/gothinkster/realworld-example-apps) API spec.
 
-<a href="https://thinkster.io/tutorials/node-json-api" target="_blank"><img width="454" src="https://raw.githubusercontent.com/gothinkster/realworld/master/media/learn-btn-hr.png" /></a>
-
-This repo is functionality complete — PRs and issues welcome!
+This repo is functionality complete 
 
 # Getting started
 
@@ -12,7 +10,7 @@ To get the Node server running locally:
 - Clone this repo
 - `npm install` to install all required dependencies
 - Install MongoDB Community Edition ([instructions](https://docs.mongodb.com/manual/installation/#tutorials)) and run it by executing `mongod`
-- `npm run dev` to start the local server
+- `npm start` to start the local server
 
 Alternately, to quickly try out this repo in the cloud, you can [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/realworld)
 
